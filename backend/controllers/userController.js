@@ -70,4 +70,24 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private (Requires Token)
+const getUserProfile = async (req, res) => {
+    // Because our 'protect' middleware ran first, req.user already exists!
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        });
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+};
+
+// Don't forget to export the new function!
+module.exports = { registerUser, loginUser, getUserProfile };
