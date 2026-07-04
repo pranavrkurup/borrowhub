@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please provide a password'],
             minlength: 6,
-            select: false, // Security: Don't return passwords by default in database queries
+            select: false, // Security: Don't return passwords by default
         },
         role: {
             type: String,
@@ -31,18 +31,13 @@ const userSchema = new mongoose.Schema(
             default: 'Student',
         },
     },
-    { timestamps: true } // Automatically adds createdAt and updatedAt fields
+    { timestamps: true }
 );
 
 // 2. Mongoose Middleware (The Shredder)
-// This runs automatically BEFORE a user is saved to the database
 userSchema.pre('save', async function (next) {
-    // If the password hasn't been modified, skip hashing (e.g., if user just updates their name)
     if (!this.isModified('password')) return next();
-
-    // Generate a 'salt' (random data added to the password before hashing for extra security)
     const salt = await bcrypt.genSalt(10);
-    // Hash the password
     this.password = await bcrypt.hash(this.password, salt);
     next();
 });
