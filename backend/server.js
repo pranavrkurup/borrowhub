@@ -7,6 +7,7 @@ const cors = require('cors');
 // Import our Day 2 User Routes
 const userRoutes = require('./routes/userRoutes');
 const itemRoutes = require('./routes/itemRoutes');
+const borrowRoutes = require('./routes/borrowRoutes');
 
 // 2. Load environment variables from the .env file
 dotenv.config();
@@ -25,6 +26,7 @@ app.get('/api/health', (req, res) => {
 
 // 6. Mount our User Routes (This connects the URLs to the controller logic)
 app.use('/api/users', userRoutes);
+app.use('/api/requests', borrowRoutes);
 app.use('/api/items', itemRoutes);
 
 // 7. Connect to the MongoDB Database using Mongoose
