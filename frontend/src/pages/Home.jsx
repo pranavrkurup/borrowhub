@@ -42,7 +42,7 @@ const Home = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/items');
+      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items');
       setItems(res.data);
       setLoading(false);
     } catch (err) {

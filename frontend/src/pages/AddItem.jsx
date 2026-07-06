@@ -61,7 +61,7 @@ const AddItem = () => {
         },
       };
 
-      await axios.post('http://localhost:5000/api/items', formData, config);
+      await axios.post('https://borrowhub-backend-9hji.onrender.com/api/items', formData, config);
 
       setLoading(false);
       navigate('/');

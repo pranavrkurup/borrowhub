@@ -39,7 +39,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
       };
 
       await axios.post(
-        'http://localhost:5000/api/requests',
+        'https://borrowhub-backend-9hji.onrender.com/api/requests',
         {
           itemId: item._id,
           startDate,

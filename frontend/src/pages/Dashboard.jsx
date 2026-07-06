@@ -55,7 +55,7 @@ const Dashboard = () => {
         },
       };
 
-      const res = await axios.get('http://localhost:5000/api/requests', config);
+      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/requests', config);
       setRequests(res.data);
       setLoading(false);
     } catch (err) {
@@ -78,7 +78,7 @@ const Dashboard = () => {
         },
       };
 
-      await axios.put(`http://localhost:5000/api/requests/${requestId}`, { status: newStatus }, config);
+      await axios.put(`https://borrowhub-backend-9hji.onrender.com/api/requests/${requestId}`, { status: newStatus }, config);
 
       // Update locally without full reload for instant feedback
       setRequests((prev) =>
