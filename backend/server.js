@@ -31,9 +31,11 @@ app.use('/api/items', itemRoutes);
 
 // 7. Connect to the MongoDB Database using Mongoose
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGO_URI)
+// Grab the variable from Render, OR fallback to local if running on your computer
+const DB_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/borrowhub';
+
+mongoose.connect(DB_URI)
     .then(() => {
         console.log("🚀 Database connected successfully to MongoDB!");
         // Only start the web server once the database connection is established
