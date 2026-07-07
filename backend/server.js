@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const multer = require('multer');
 
 // Import our Day 2 User Routes
 const userRoutes = require('./routes/userRoutes');
@@ -16,7 +17,26 @@ dotenv.config();
 const app = express();
 
 // 4. Mount Global Middlewares
-app.use(cors()); // Allows our frontend React app to talk to this backend
+
+// CORS: Only allow our specific frontend origins
+const allowedOrigins = [
+    'http://localhost:5173',             // Vite dev server
+    'http://localhost:5000',             // Alternate local dev
+    'https://theborrowhub.vercel.app',   // Production Vercel frontend
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (e.g., mobile apps, curl, Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS policy: Origin ${origin} is not allowed`));
+    },
+    credentials: true,
+}));
+
 app.use(express.json()); // Tells Express to parse incoming JSON data
 
 // 5. Test route to ensure the server is working
@@ -29,7 +49,31 @@ app.use('/api/users', userRoutes);
 app.use('/api/requests', borrowRoutes);
 app.use('/api/items', itemRoutes);
 
-// 7. Connect to the MongoDB Database using Mongoose
+// 7. Global Error-Handling Middleware (catches Multer & Cloudinary errors)
+app.use((err, req, res, next) => {
+    console.error('🔥 Global Error Handler:', err);
+
+    // Handle Multer-specific errors (file too large, wrong field name, etc.)
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+            message: `Upload error: ${err.message}`,
+            error: err.code,
+        });
+    }
+
+    // Handle CORS errors
+    if (err.message && err.message.startsWith('CORS policy')) {
+        return res.status(403).json({ message: err.message });
+    }
+
+    // Handle any other errors (Cloudinary auth failures, etc.)
+    return res.status(500).json({
+        message: 'Internal server error during upload or processing.',
+        error: err.message,
+    });
+});
+
+// 8. Connect to the MongoDB Database using Mongoose
 const PORT = process.env.PORT || 5000;
 
 // Grab the variable from Render, OR fallback to local if running on your computer

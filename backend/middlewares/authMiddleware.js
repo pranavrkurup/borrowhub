@@ -20,13 +20,13 @@ const protect = async (req, res, next) => {
             next();
         } catch (error) {
             console.error("Token verification failed:", error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            return res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
 
     // If no token was found at all
     if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token provided' });
+        return res.status(401).json({ message: 'Not authorized, no token provided' });
     }
 };
 

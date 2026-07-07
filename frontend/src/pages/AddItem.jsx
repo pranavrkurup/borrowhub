@@ -66,6 +66,7 @@ const AddItem = () => {
       setLoading(false);
       navigate('/');
     } catch (err) {
+      console.error('❌ Item creation failed:', err.response?.status, err.response?.data || err.message);
       setLoading(false);
       setError(err.response?.data?.message || 'Failed to list item. Ensure backend is running and image upload is working.');
     }
