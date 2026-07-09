@@ -1,28 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import BorrowModal from '../components/BorrowModal';
+import ItemCard from '../components/ItemCard';
 import { Link, useNavigate } from 'react-router-dom';
 
 const CATEGORIES = ['All', 'Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
-
-const getBadgeClass = (category) => {
-  switch (category) {
-    case 'Electronics': return 'badge-cyan';
-    case 'Books': return 'badge-purple';
-    case 'Lab Equipment': return 'badge-pink';
-    case 'Sports': return 'badge-emerald';
-    default: return 'badge-amber';
-  }
-};
-
-const getConditionBadgeClass = (condition) => {
-  switch (condition) {
-    case 'Like New': return 'badge-emerald';
-    case 'Good': return 'badge-cyan';
-    default: return 'badge-amber';
-  }
-};
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -35,19 +18,45 @@ const Home = () => {
   const [selectedItemForBorrow, setSelectedItemForBorrow] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  // Debounce timer ref so we don't hammer the API on every keystroke
+  const debounceRef = useRef(null);
 
-  const fetchItems = async () => {
+  // Re-fetch items whenever the search query or category changes
+  useEffect(() => {
+    // Clear any pending debounced call
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      fetchItems(searchQuery, selectedCategory);
+    }, 400); // 400ms debounce
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [searchQuery, selectedCategory]);
+
+  const fetchItems = async (search, category) => {
     try {
       setLoading(true);
-      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items');
+      setError(null);
+
+      // Build query params for the backend
+      const params = {};
+      if (search && search.trim() !== '') {
+        params.search = search.trim();
+      }
+      if (category && category !== 'All') {
+        params.category = category;
+      }
+
+      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items', { params });
       setItems(res.data);
       setLoading(false);
     } catch (err) {
       console.error(err);
-      setError('Failed to fetch items from the server. Ensure backend is running on port 5000.');
+      setError('Failed to fetch items from the server.');
       setLoading(false);
     }
   };
@@ -58,12 +67,13 @@ const Home = () => {
     setTimeout(() => setSuccessMessage(null), 6000);
   };
 
-  const filteredItems = items.filter((item) => {
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const handleItemStatusChange = (updatedItem) => {
+    setItems((prev) =>
+      prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
+    );
+    setSuccessMessage('🎉 Item status updated to Requested successfully!');
+    setTimeout(() => setSuccessMessage(null), 6000);
+  };
 
   return (
     <div className="container" style={{ paddingBottom: '90px' }}>
@@ -121,6 +131,39 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Active Filters Summary */}
+      {(searchQuery || selectedCategory !== 'All') && !loading && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          marginBottom: '24px',
+          flexWrap: 'wrap'
+        }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            Showing results
+            {searchQuery && <> for "<strong style={{ color: '#fff' }}>{searchQuery}</strong>"</>}
+            {selectedCategory !== 'All' && <> in <strong style={{ color: 'var(--accent-cyan)' }}>{selectedCategory}</strong></>}
+            {` — ${items.length} item${items.length !== 1 ? 's' : ''} found`}
+          </span>
+          <button
+            onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+            className="glass-button"
+            style={{
+              padding: '4px 14px',
+              fontSize: '0.8rem',
+              borderRadius: '9999px',
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              color: '#f87171'
+            }}
+          >
+            ✕ Clear Filters
+          </button>
+        </div>
+      )}
+
       {/* Success Alert */}
       {successMessage && (
         <div 
@@ -152,7 +195,7 @@ const Home = () => {
         <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)', fontSize: '1.2rem' }}>
           ⏳ Loading available campus inventory...
         </div>
-      ) : filteredItems.length === 0 ? (
+      ) : items.length === 0 ? (
         <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '520px', margin: '30px auto' }}>
           <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📦</div>
           <h3 style={{ fontSize: '1.6rem', marginBottom: '10px', color: '#fff' }}>No items found</h3>
@@ -179,123 +222,14 @@ const Home = () => {
           gap: '26px',
           marginTop: '24px'
         }}>
-          {filteredItems.map((item) => {
-            const isOwner = user && item.ownerId && (item.ownerId._id === user._id || item.ownerId === user._id);
-            const isBorrowed = item.status === 'Borrowed';
-
-            return (
-              <div 
-                key={item._id} 
-                className="glass-panel"
-                style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  justifyContent: 'space-between', 
-                  overflow: 'hidden',
-                  padding: '22px',
-                  position: 'relative'
-                }}
-              >
-                <div>
-                  {/* Thumbnail Image */}
-                  <div style={{ 
-                    width: '100%', 
-                    height: '210px', 
-                    borderRadius: '16px', 
-                    overflow: 'hidden', 
-                    position: 'relative',
-                    marginBottom: '18px',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    background: 'rgba(0,0,0,0.3)'
-                  }}>
-                    <img 
-                      src={item.imageUrl} 
-                      alt={item.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
-                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'; }}
-                    />
-                    <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px' }}>
-                      <span className={`badge ${getBadgeClass(item.category)}`}>
-                        {item.category}
-                      </span>
-                    </div>
-                    <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
-                      <span className={`badge ${getConditionBadgeClass(item.condition)}`} style={{ background: 'rgba(11, 15, 25, 0.85)', backdropFilter: 'blur(4px)' }}>
-                        {item.condition}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Title & Description */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
-                    <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>
-                      {item.title}
-                    </h3>
-                  </div>
-
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.55, marginBottom: '20px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {item.description}
-                  </p>
-                </div>
-
-                {/* Card Footer */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '16px' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      👤 <strong style={{ color: '#fff' }}>{item.ownerId?.name || 'Campus Student'}</strong>
-                    </span>
-                    <span style={{ 
-                      color: isBorrowed ? 'var(--accent-red)' : 'var(--accent-emerald)', 
-                      fontWeight: 600,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      ● {item.status}
-                    </span>
-                  </div>
-
-                  {isOwner ? (
-                    <div style={{ 
-                      width: '100%', 
-                      padding: '12px', 
-                      textAlign: 'center', 
-                      background: 'rgba(255, 255, 255, 0.05)', 
-                      borderRadius: '12px', 
-                      color: 'var(--text-muted)', 
-                      fontWeight: 600,
-                      fontSize: '0.9rem',
-                      border: '1px dashed rgba(255, 255, 255, 0.2)'
-                    }}>
-                      ✨ You own this item
-                    </div>
-                  ) : isBorrowed ? (
-                    <button
-                      disabled
-                      className="glass-button btn-secondary"
-                      style={{ width: '100%', opacity: 0.5, cursor: 'not-allowed' }}
-                    >
-                      Currently Borrowed
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        if (!user) {
-                          navigate('/login');
-                        } else {
-                          setSelectedItemForBorrow(item);
-                        }
-                      }}
-                      className="glass-button btn-primary"
-                      style={{ width: '100%', padding: '14px' }}
-                    >
-                      📦 Request Borrow
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {items.map((item) => (
+            <ItemCard
+              key={item._id}
+              item={item}
+              user={user}
+              onStatusChange={handleItemStatusChange}
+            />
+          ))}
         </div>
       )}
 

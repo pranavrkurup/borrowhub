@@ -34,7 +34,7 @@ const itemSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ['Available', 'Borrowed', 'Inactive'],
+            enum: ['Available', 'Requested', 'Borrowed'],
             default: 'Available',
         },
     },
