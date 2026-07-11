@@ -99,6 +99,68 @@ const Home = () => {
           aesthetic. Access scientific calculators, textbooks, IoT kits, and DSLR cameras across campus.
         </p>
 
+        {/* Reference Palette Dual Card matching exact screenshot */}
+        <div style={{
+          maxWidth: '420px',
+          margin: '0 auto 36px',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          boxShadow: '0 20px 45px rgba(1, 62, 55, 0.18)',
+          border: '1px solid rgba(1, 62, 55, 0.25)'
+        }}>
+          {/* Top Half: Butter Background #FFEFB3 with Green Script #013E37 */}
+          <div style={{
+            background: '#FFEFB3',
+            padding: '28px 20px',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontFamily: "'Damion', cursive",
+              fontSize: '2.6rem',
+              color: '#013E37',
+              lineHeight: 1,
+              marginBottom: '4px'
+            }}>
+              Butter
+            </div>
+            <div style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              color: '#013E37',
+              letterSpacing: '1.5px'
+            }}>
+              #FFEFB3
+            </div>
+          </div>
+
+          {/* Bottom Half: Green Background #013E37 with Butter Script #FFEFB3 */}
+          <div style={{
+            background: '#013E37',
+            padding: '28px 20px',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontFamily: "'Damion', cursive",
+              fontSize: '2.6rem',
+              color: '#FFEFB3',
+              lineHeight: 1,
+              marginBottom: '4px'
+            }}>
+              Green
+            </div>
+            <div style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              color: '#FFEFB3',
+              letterSpacing: '1.5px'
+            }}>
+              #013E37
+            </div>
+          </div>
+        </div>
+
         {/* Search Component wrapper */}
         <div className="w-full max-w-2xl mx-auto mb-8">
           

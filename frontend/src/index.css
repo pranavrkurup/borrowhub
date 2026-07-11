@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Damion&display=swap');
 
-:root, [data-theme="green"] {
+:root, [data-theme="butter"] {
   /* Core Butter & Green Palette */
   --color-green: #013E37;
   --color-green-dark: #012823;
@@ -10,49 +10,6 @@
   --color-butter-light: #FFF8D6;
   --color-butter-dark: #E6D491;
 
-  /* Theme semantic variables */
-  --bg-app: #013E37;
-  --bg-gradient:
-    radial-gradient(at 15% 15%, rgba(255, 239, 179, 0.14) 0px, transparent 60%),
-    radial-gradient(at 85% 85%, rgba(2, 89, 79, 0.45) 0px, transparent 60%),
-    radial-gradient(at 50% 10%, rgba(255, 239, 179, 0.08) 0px, transparent 50%);
-  --bg-panel: rgba(1, 40, 35, 0.82);
-  --bg-panel-hover: rgba(2, 53, 47, 0.9);
-  --bg-navbar: rgba(1, 50, 44, 0.9);
-  --bg-input: rgba(255, 239, 179, 0.08);
-  --bg-input-focus: rgba(255, 239, 179, 0.15);
-
-  --text-main: #FFEFB3;
-  --text-primary: #FFF8D6;
-  --text-secondary: #CBE3DF;
-  --text-muted: #8FB5AF;
-  --text-inverse: #013E37;
-
-  --accent-main: #FFEFB3;
-  --accent-hover: #FFF8D6;
-  --accent-text: #013E37;
-
-  --border-subtle: rgba(255, 239, 179, 0.22);
-  --border-strong: rgba(255, 239, 179, 0.5);
-
-  --shadow-main: 0 20px 45px rgba(0, 26, 23, 0.65);
-  --shadow-glow: 0 0 28px rgba(255, 239, 179, 0.28);
-
-  /* Status colors */
-  --status-available-bg: rgba(255, 239, 179, 0.18);
-  --status-available-border: rgba(255, 239, 179, 0.45);
-  --status-available-text: #FFEFB3;
-
-  --status-requested-bg: rgba(255, 193, 112, 0.18);
-  --status-requested-border: rgba(255, 193, 112, 0.45);
-  --status-requested-text: #FFC170;
-
-  --status-borrowed-bg: rgba(255, 115, 115, 0.18);
-  --status-borrowed-border: rgba(255, 115, 115, 0.45);
-  --status-borrowed-text: #FF9B9B;
-}
-
-[data-theme="butter"] {
   --bg-app: #FFEFB3;
   --bg-gradient:
     radial-gradient(at 15% 15%, rgba(1, 62, 55, 0.1) 0px, transparent 60%),
@@ -94,6 +51,48 @@
   --status-borrowed-text: #A81B1B;
 }
 
+[data-theme="green"] {
+  --bg-app: #013E37;
+  --bg-gradient:
+    radial-gradient(at 15% 15%, rgba(255, 239, 179, 0.14) 0px, transparent 60%),
+    radial-gradient(at 85% 85%, rgba(2, 89, 79, 0.45) 0px, transparent 60%),
+    radial-gradient(at 50% 10%, rgba(255, 239, 179, 0.08) 0px, transparent 50%);
+  --bg-panel: rgba(1, 40, 35, 0.82);
+  --bg-panel-hover: rgba(2, 53, 47, 0.9);
+  --bg-navbar: rgba(1, 50, 44, 0.9);
+  --bg-input: rgba(255, 239, 179, 0.08);
+  --bg-input-focus: rgba(255, 239, 179, 0.15);
+
+  --text-main: #FFEFB3;
+  --text-primary: #FFF8D6;
+  --text-secondary: #CBE3DF;
+  --text-muted: #8FB5AF;
+  --text-inverse: #013E37;
+
+  --accent-main: #FFEFB3;
+  --accent-hover: #FFF8D6;
+  --accent-text: #013E37;
+
+  --border-subtle: rgba(1, 62, 55, 0.2);
+  --border-strong: rgba(1, 62, 55, 0.45);
+
+  --shadow-main: 0 15px 35px rgba(1, 62, 55, 0.14);
+  --shadow-glow: 0 0 25px rgba(1, 62, 55, 0.22);
+
+  /* Status colors */
+  --status-available-bg: rgba(1, 62, 55, 0.14);
+  --status-available-border: rgba(1, 62, 55, 0.4);
+  --status-available-text: #013E37;
+
+  --status-requested-bg: rgba(184, 114, 0, 0.14);
+  --status-requested-border: rgba(184, 114, 0, 0.38);
+  --status-requested-text: #8E5600;
+
+  --status-borrowed-bg: rgba(186, 28, 28, 0.14);
+  --status-borrowed-border: rgba(186, 28, 28, 0.38);
+  --status-borrowed-text: #A81B1B;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -102,8 +101,10 @@
 
 body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #FFEFB3 !important;
-  color: #013E37 !important;
+  background-color: var(--bg-app);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color 0.35s ease, color 0.35s ease;
