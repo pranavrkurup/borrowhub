@@ -91,16 +91,16 @@ const Home = () => {
         {/* Search Component wrapper */}
         <div className="w-full max-w-2xl mx-auto mb-8">
           
-          {/* Pill-Shaped Search Input Wrapper (Anti-Crush Layout) */}
+          {/* Pill-Shaped Search Input Wrapper (Bulletproof Flexbox) */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center w-full rounded-full border-2 border-[#013E37] bg-white/95 p-1 md:p-1.5 shadow-lg"
+            className="flex items-center w-full max-w-2xl mx-auto bg-[#F8FBFB] border-2 border-[#013E37] rounded-full p-1 overflow-hidden shadow-md"
           >
             {/* Search Icon */}
-            <div className="pl-3 md:pl-4 text-[#013E37] flex items-center shrink-0">
+            <div className="pl-3 text-[#013E37] flex items-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -113,13 +113,13 @@ const Home = () => {
               placeholder="Search for calculators, cameras, or lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full min-w-0 bg-transparent px-3 py-2 md:px-4 md:py-3 text-sm md:text-base text-[#013E37] placeholder-[#013E37]/60 font-medium focus:outline-none"
+              className="flex-1 bg-transparent px-3 py-2 text-[#013E37] outline-none min-w-0 text-sm md:text-base placeholder-[#013E37]/50 font-medium"
             />
 
-            {/* Search Button attached inside right */}
+            {/* Search Button */}
             <button
               type="submit"
-              className="bg-[#013E37] text-[#FFEFB3] font-bold text-xs md:text-sm px-4 py-2 md:px-7 md:py-3 rounded-full hover:bg-[#02594F] transition-all shrink-0"
+              className="bg-[#013E37] text-[#FFEFB3] px-5 py-2 rounded-full font-bold whitespace-nowrap shrink-0 text-sm hover:bg-[#02594F] transition-all"
             >
               Search
             </button>

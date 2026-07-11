@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -7,19 +7,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('borrowhub-theme') || 'green';
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('borrowhub-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'green' ? 'butter' : 'green'));
-  };
-
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -27,127 +14,54 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  const linkClass = (path) =>
+    `whitespace-nowrap px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+      isActive(path)
+        ? 'text-[#013E37] bg-[#013E37]/10 border border-[#013E37]/30'
+        : 'text-[#013E37]/60 border border-transparent hover:text-[#013E37] hover:bg-[#013E37]/5'
+    }`;
+
   return (
-    <header className="glass-navbar">
-      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '76px' }}>
-        
-        {/* Brand Logo with Butter & Green Palette */}
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            background: 'var(--accent-main)',
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: '1.35rem',
-            color: 'var(--accent-text)',
-            boxShadow: 'var(--shadow-glow)'
-          }}>
+    <header className="w-full bg-[#FFEFB3]/90 backdrop-blur-md border-b border-[#013E37]/15 sticky top-0 z-50">
+      <div className="w-full max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
+        {/* Brand Logo */}
+        <Link to="/" className="flex items-center gap-2.5 no-underline shrink-0">
+          <div className="w-10 h-10 bg-[#013E37] rounded-xl flex items-center justify-center text-[#FFEFB3] font-extrabold text-xl shadow-md">
             B
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.5px', color: 'var(--text-main)', lineHeight: 1 }}>
-              Borrow<span style={{ color: 'var(--text-muted)' }}>Hub</span>
-            </span>
-          </div>
+          <span className="text-xl font-extrabold tracking-tight text-[#013E37] leading-none">
+            Borrow<span className="text-[#013E37]/50">Hub</span>
+          </span>
         </Link>
 
-        {/* Navigation Links & Theme Toggle */}
-        <nav style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {/* Butter & Green Palette Mode Switcher */}
-          <button
-            onClick={toggleTheme}
-            className="glass-button btn-secondary"
-            title="Switch between Green (#013E37) and Butter (#FFEFB3) theme"
-            style={{
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            {theme === 'green' ? (
-              <>
-                <span>🧈</span>
-                <span>Switch to Butter</span>
-              </>
-            ) : (
-              <>
-                <span>🌲</span>
-                <span>Switch to Green</span>
-              </>
-            )}
-          </button>
+        {/* Navigation Links */}
+        <nav className="flex items-center gap-1.5 md:gap-2.5 overflow-x-auto no-scrollbar">
 
-          <Link 
-            to="/" 
-            style={{
-              padding: '8px 16px',
-              borderRadius: '10px',
-              textDecoration: 'none',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              color: isActive('/') ? 'var(--accent-main)' : 'var(--text-muted)',
-              background: isActive('/') ? 'var(--bg-input-focus)' : 'transparent',
-              border: isActive('/') ? '1px solid var(--border-strong)' : '1px solid transparent',
-              transition: 'all 0.2s'
-            }}
-          >
+          <Link to="/" className={linkClass('/')}>
             Feed
           </Link>
 
           {user ? (
             <>
-              <Link 
-                to="/add-item" 
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.95rem',
-                  color: isActive('/add-item') ? 'var(--accent-main)' : 'var(--text-muted)',
-                  background: isActive('/add-item') ? 'var(--bg-input-focus)' : 'transparent',
-                  border: isActive('/add-item') ? '1px solid var(--border-strong)' : '1px solid transparent',
-                  transition: 'all 0.2s'
-                }}
-              >
+              <Link to="/add-item" className={linkClass('/add-item')}>
                 + List Item
               </Link>
 
-              <Link 
-                to="/dashboard" 
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.95rem',
-                  color: isActive('/dashboard') ? 'var(--accent-main)' : 'var(--text-muted)',
-                  background: isActive('/dashboard') ? 'var(--bg-input-focus)' : 'transparent',
-                  border: isActive('/dashboard') ? '1px solid var(--border-strong)' : '1px solid transparent',
-                  transition: 'all 0.2s'
-                }}
-              >
+              <Link to="/dashboard" className={linkClass('/dashboard')}>
                 Dashboard
               </Link>
 
-              <div style={{ width: '1px', height: '24px', background: 'var(--border-subtle)', margin: '0 8px' }} />
+              {/* Divider — hidden on small screens */}
+              <div className="hidden md:block w-px h-6 bg-[#013E37]/20 mx-1" />
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                  Hi, <strong style={{ color: 'var(--text-main)' }}>{user.name ? user.name.split(' ')[0] : 'Student'}</strong>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="hidden sm:inline text-sm text-[#013E37]/60 font-medium">
+                  Hi, <strong className="text-[#013E37]">{user.name ? user.name.split(' ')[0] : 'Student'}</strong>
                 </span>
-                <button 
+                <button
                   onClick={handleLogout}
-                  className="glass-button btn-secondary"
-                  style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                  className="whitespace-nowrap px-3 py-2 rounded-lg text-sm font-semibold text-[#013E37]/60 border border-[#013E37]/20 hover:bg-[#013E37]/10 hover:text-[#013E37] transition-all"
                 >
                   Logout
                 </button>
@@ -155,25 +69,13 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link 
-                to="/login" 
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: 600,
-                  fontSize: '0.95rem',
-                  color: isActive('/login') ? 'var(--text-main)' : 'var(--text-muted)',
-                  transition: 'all 0.2s'
-                }}
-              >
+              <Link to="/login" className={linkClass('/login')}>
                 Login
               </Link>
 
-              <Link 
-                to="/register" 
-                className="glass-button btn-primary"
-                style={{ padding: '8px 18px', textDecoration: 'none', fontSize: '0.9rem' }}
+              <Link
+                to="/register"
+                className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold bg-[#013E37] text-[#FFEFB3] hover:bg-[#02594F] transition-all shrink-0"
               >
                 Sign Up
               </Link>
