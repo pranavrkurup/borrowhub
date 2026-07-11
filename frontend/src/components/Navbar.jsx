@@ -39,12 +39,17 @@ const Navbar = () => {
               Dashboard
             </Link>
 
-            <button
-              onClick={handleLogout}
-              className="bg-[#013E37] text-[#FFEFB3] px-6 py-2 rounded-full font-bold ml-4 hover:bg-[#02594F] transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-3 ml-2 border-l-2 border-[#013E37]/20 pl-4">
+              <span className="font-extrabold text-[#013E37]">
+                Hi, {user?.name || user?.username || 'User'}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="bg-[#013E37] text-[#FFEFB3] px-6 py-2 rounded-full font-bold hover:bg-[#02594F] transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </>
         ) : (
           <>
