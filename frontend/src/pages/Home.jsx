@@ -122,106 +122,111 @@ const Home = () => {
           College peer-to-peer equipment sharing built with the signature <strong style={{ color: 'var(--text-main)' }}>Butter & Green</strong> aesthetic. Access scientific calculators, textbooks, IoT kits, and DSLR cameras across campus.
         </p>
 
-        {/* Reference Palette Dual Card */}
-        <div style={{
-          maxWidth: '420px',
-          margin: '0 auto 34px',
-          borderRadius: '20px',
-          overflow: 'hidden',
-          boxShadow: 'var(--shadow-main)',
-          border: '1px solid var(--border-strong)'
-        }}>
-          {/* Top Half: Butter Background #FFEFB3 with Green Script #013E37 */}
-          <div style={{
-            background: '#FFEFB3',
-            padding: '24px 20px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              fontFamily: "'Damion', cursive",
-              fontSize: '2.4rem',
-              color: '#013E37',
-              lineHeight: 1,
-              marginBottom: '4px'
-            }}>
-              Butter
+        {/* New Search Component replacing static palette block */}
+        <div className="max-w-2xl mx-auto mb-8 px-4" style={{ maxWidth: '680px', margin: '0 auto 32px' }}>
+          
+          {/* Pill-Shaped Search Input Wrapper */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              fetchItems(searchQuery, selectedCategory);
+            }}
+            className="flex items-center rounded-full border-2 border-[#013E37] bg-white p-1.5 shadow-lg"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: '9999px',
+              border: '2px solid #013E37',
+              background: '#F8FBFB',
+              padding: '6px',
+              boxShadow: '0 12px 30px rgba(1, 62, 55, 0.15)'
+            }}
+          >
+            {/* Search Icon */}
+            <div style={{ paddingLeft: '14px', color: '#013E37', display: 'flex', alignItems: 'center' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </div>
-            <div style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              color: '#013E37',
-              letterSpacing: '1.5px'
-            }}>
-              #FFEFB3
-            </div>
+
+            {/* Input Field */}
+            <input
+              type="text"
+              placeholder="Search for calculators, cameras, or lab kits..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-transparent px-4 py-3 text-[#013E37] placeholder-[#013E37]/60 font-medium focus:outline-none"
+              style={{
+                flex: 1,
+                border: 'none',
+                background: 'transparent',
+                padding: '12px 16px',
+                color: '#013E37',
+                fontSize: '1rem',
+                fontWeight: 500,
+                outline: 'none'
+              }}
+            />
+
+            {/* Search Button attached inside right */}
+            <button
+              type="submit"
+              className="bg-[#013E37] text-[#FFEFB3] font-bold px-7 py-3 rounded-full hover:bg-[#02594F] transition-all shrink-0"
+              style={{
+                background: '#013E37',
+                color: '#FFEFB3',
+                fontWeight: 700,
+                padding: '11px 26px',
+                borderRadius: '9999px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.95rem',
+                flexShrink: 0
+              }}
+            >
+              Search
+            </button>
+          </form>
+
+          {/* Clickable Category Pills */}
+          <div
+            className="mt-4 flex flex-wrap items-center justify-center gap-2"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              marginTop: '18px'
+            }}
+          >
+            {CATEGORIES.map((cat) => {
+              const isSelected = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className="rounded-full px-4 py-1.5 text-sm transition-all"
+                  style={{
+                    padding: '6px 16px',
+                    fontSize: '0.84rem',
+                    borderRadius: '9999px',
+                    border: '1px solid #013E37',
+                    background: isSelected ? '#013E37' : 'rgba(255, 255, 255, 0.75)',
+                    color: isSelected ? '#FFEFB3' : '#013E37',
+                    fontWeight: isSelected ? 700 : 500,
+                    cursor: 'pointer',
+                    boxShadow: isSelected ? '0 4px 12px rgba(1, 62, 55, 0.2)' : 'none',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {cat}
+                </button>
+              );
+            })}
           </div>
-
-          {/* Bottom Half: Green Background #013E37 with Butter Script #FFEFB3 */}
-          <div style={{
-            background: '#013E37',
-            padding: '24px 20px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              fontFamily: "'Damion', cursive",
-              fontSize: '2.4rem',
-              color: '#FFEFB3',
-              lineHeight: 1,
-              marginBottom: '4px'
-            }}>
-              Green
-            </div>
-            <div style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              color: '#FFEFB3',
-              letterSpacing: '1.5px'
-            }}>
-              #013E37
-            </div>
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div style={{ maxWidth: '640px', margin: '0 auto 30px' }}>
-          <input
-            type="text"
-            placeholder="🔍 Search calculators, textbooks, sensors, or cameras..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="glass-input"
-            style={{ padding: '16px 22px', fontSize: '1.05rem', boxShadow: 'var(--shadow-main)' }}
-          />
-        </div>
-
-        {/* Category Tabs */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className="glass-button"
-                style={{
-                  padding: '8px 20px',
-                  fontSize: '0.88rem',
-                  borderRadius: '9999px',
-                  background: isSelected 
-                    ? 'var(--accent-main)' 
-                    : 'var(--bg-input)',
-                  color: isSelected ? 'var(--accent-text)' : 'var(--text-main)',
-                  border: isSelected ? '1px solid var(--accent-main)' : '1px solid var(--border-subtle)',
-                  fontWeight: isSelected ? 700 : 500,
-                  boxShadow: isSelected ? 'var(--shadow-glow)' : 'none'
-                }}
-              >
-                {cat}
-              </button>
-            );
-          })}
         </div>
       </section>
 
