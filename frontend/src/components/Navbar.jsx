@@ -48,12 +48,9 @@ const Navbar = () => {
           }}>
             B
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <span style={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.5px', color: 'var(--text-main)', lineHeight: 1 }}>
               Borrow<span style={{ color: 'var(--text-muted)' }}>Hub</span>
-            </span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--text-muted)', marginTop: '2px' }}>
-              {theme === 'green' ? 'Green #013E37' : 'Butter #FFEFB3'}
             </span>
           </div>
         </Link>

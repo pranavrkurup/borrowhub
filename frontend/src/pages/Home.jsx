@@ -77,40 +77,6 @@ const Home = () => {
       {/* Hero Section */}
       <section style={{ textAlign: 'center', padding: '56px 0 40px' }}>
         
-        {/* Signature Palette Showcase Banner */}
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 16px',
-          borderRadius: '9999px',
-          background: 'var(--bg-input)',
-          border: '1px solid var(--border-strong)',
-          marginBottom: '20px',
-          fontSize: '0.85rem',
-          fontWeight: 700
-        }}>
-          <span style={{
-            display: 'inline-block',
-            width: '12px',
-            height: '12px',
-            borderRadius: '50%',
-            background: '#FFEFB3',
-            border: '1px solid #013E37'
-          }} />
-          <span style={{ color: 'var(--text-main)' }}>Butter #FFEFB3</span>
-          <span style={{ color: 'var(--text-muted)' }}>•</span>
-          <span style={{
-            display: 'inline-block',
-            width: '12px',
-            height: '12px',
-            borderRadius: '50%',
-            background: '#013E37',
-            border: '1px solid #FFEFB3'
-          }} />
-          <span style={{ color: 'var(--text-main)' }}>Green #013E37</span>
-        </div>
-
         <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.3rem)', fontWeight: 800, lineHeight: 1.12, marginBottom: '18px', letterSpacing: '-1px', color: 'var(--text-main)' }}>
           Borrow What You Need. <br />
           <span style={{ color: 'var(--accent-main)', textDecoration: 'underline', textUnderlineOffset: '6px', textDecorationThickness: '3px' }}>
@@ -119,7 +85,7 @@ const Home = () => {
         </h1>
 
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', maxWidth: '680px', margin: '0 auto 30px', lineHeight: 1.6 }}>
-          College peer-to-peer equipment sharing built with the signature <strong style={{ color: 'var(--text-main)' }}>Butter & Green</strong> aesthetic. Access scientific calculators, textbooks, IoT kits, and DSLR cameras across campus.
+          A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
         {/* New Search Component replacing static palette block */}
