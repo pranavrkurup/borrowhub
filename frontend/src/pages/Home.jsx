@@ -91,13 +91,13 @@ const Home = () => {
         {/* Search Component wrapper */}
         <div className="w-full max-w-2xl mx-auto mb-8">
           
-          {/* Pill-Shaped Search Input Wrapper (Bulletproof Flexbox) */}
+          {/* Pill-Shaped Search Input Wrapper */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center w-full max-w-2xl mx-auto bg-[#F8FBFB] border-2 border-[#013E37] rounded-full p-1 overflow-hidden shadow-md"
+            className="flex items-center w-full max-w-2xl mx-auto bg-white border-2 border-[#013E37] rounded-full p-1 overflow-hidden shadow-md mt-6 mb-8"
           >
             {/* Search Icon */}
             <div className="pl-3 text-[#013E37] flex items-center shrink-0">
@@ -113,20 +113,20 @@ const Home = () => {
               placeholder="Search for calculators, cameras, or lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-3 py-2 text-[#013E37] outline-none min-w-0 text-sm md:text-base placeholder-[#013E37]/50 font-medium"
+              className="flex-1 bg-transparent px-4 py-2 md:py-3 text-[#013E37] placeholder-[#013E37]/60 outline-none min-w-0 font-medium"
             />
 
             {/* Search Button */}
             <button
               type="submit"
-              className="bg-[#013E37] text-[#FFEFB3] px-5 py-2 rounded-full font-bold whitespace-nowrap shrink-0 text-sm hover:bg-[#02594F] transition-all"
+              className="bg-[#013E37] text-[#FFEFB3] px-6 py-2 md:py-3 rounded-full font-bold shrink-0 transition-transform hover:scale-105"
             >
               Search
             </button>
           </form>
 
           {/* Clickable Category Pills */}
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -134,11 +134,11 @@ const Home = () => {
                   key={cat}
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full text-xs md:text-sm px-3 py-1.5 md:px-4 transition-all cursor-pointer border ${
+                  className={
                     isSelected
-                      ? 'border-[#013E37] bg-[#013E37] text-[#FFEFB3] font-bold shadow-sm'
-                      : 'border-[#013E37]/40 bg-white/80 text-[#013E37] font-medium hover:border-[#013E37] hover:bg-white'
-                  }`}
+                      ? "border border-[#013E37] bg-[#013E37] text-[#FFEFB3] px-4 py-1.5 rounded-full text-sm font-bold transition-colors cursor-pointer"
+                      : "border border-[#013E37] text-[#013E37] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#013E37] hover:text-[#FFEFB3] transition-colors cursor-pointer"
+                  }
                 >
                   {cat}
                 </button>

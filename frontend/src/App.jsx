@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard';
 function App() {
   return (
     <AuthProvider>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="min-h-screen flex flex-col bg-[#FFEFB3] text-[#013E37]">
         <Navbar />
         <main style={{ flex: 1 }}>
           <Routes>
