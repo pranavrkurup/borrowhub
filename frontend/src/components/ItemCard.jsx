@@ -310,28 +310,30 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-bold text-[#013E37] mb-1">
-                Start Date
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
-              />
-            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="w-full">
+                <label className="block text-sm font-bold text-[#013E37] mb-1">
+                  Item Needed Date
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-bold text-[#013E37] mb-1">
-                End Date
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
-              />
+              <div className="w-full">
+                <label className="block text-sm font-bold text-[#013E37] mb-1">
+                  Expected Return Date
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                />
+              </div>
             </div>
 
             <div>
@@ -340,7 +342,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               </label>
               <textarea
                 rows="3"
-                placeholder="Why do you need this item?"
+                placeholder="E.g., Hey, I have a lab on Tuesday, could I grab this in the morning?"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"

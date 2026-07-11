@@ -129,30 +129,32 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
-              Start Date *
-            </label>
-            <input
-              type="date"
-              required
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="glass-input"
-            />
-          </div>
+          <div className="flex flex-col sm:flex-row gap-4 mb-4">
+            <div className="w-full">
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+                Item Needed Date *
+              </label>
+              <input
+                type="date"
+                required
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+              />
+            </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
-              End Date (Expected Return) *
-            </label>
-            <input
-              type="date"
-              required
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="glass-input"
-            />
+            <div className="w-full">
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+                Expected Return Date *
+              </label>
+              <input
+                type="date"
+                required
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+              />
+            </div>
           </div>
 
           <div>
@@ -162,10 +164,10 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
             <textarea
               rows="3"
               maxLength="200"
-              placeholder="Why do you need this equipment? Where & when would you like to pick it up?"
+              placeholder="E.g., Hey, I have a lab on Tuesday, could I grab this in the morning?"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="glass-input"
+              className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
               style={{ resize: 'none', fontFamily: 'Outfit, sans-serif' }}
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textAlign: 'right', marginTop: '4px' }}>
