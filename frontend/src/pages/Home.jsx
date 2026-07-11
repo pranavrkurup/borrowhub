@@ -75,41 +75,32 @@ const Home = () => {
     <div className="container" style={{ paddingBottom: '90px' }}>
       
       {/* Hero Section */}
-      <section style={{ textAlign: 'center', padding: '56px 0 40px' }}>
+      <section className="text-center py-10 md:py-14 px-4 sm:px-6 md:px-8">
         
-        <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.3rem)', fontWeight: 800, lineHeight: 1.12, marginBottom: '18px', letterSpacing: '-1px', color: 'var(--text-main)' }}>
+        <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight text-[#013E37] mb-4 md:mb-6 tracking-tight">
           Borrow What You Need. <br />
-          <span style={{ color: 'var(--accent-main)', textDecoration: 'underline', textUnderlineOffset: '6px', textDecorationThickness: '3px' }}>
+          <span className="text-[#013E37] underline decoration-[#013E37] underline-offset-4 decoration-4">
             Share What You Have.
           </span>
         </h1>
 
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.15rem', maxWidth: '680px', margin: '0 auto 30px', lineHeight: 1.6 }}>
+        <p className="text-base md:text-lg text-[#013E37]/80 max-w-2xl mx-auto mb-6 md:mb-8 leading-relaxed">
           A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
-        {/* New Search Component replacing static palette block */}
-        <div className="max-w-2xl mx-auto mb-8 px-4" style={{ maxWidth: '680px', margin: '0 auto 32px' }}>
+        {/* Search Component wrapper */}
+        <div className="w-full max-w-2xl mx-auto mb-8">
           
-          {/* Pill-Shaped Search Input Wrapper */}
+          {/* Pill-Shaped Search Input Wrapper (Anti-Crush Layout) */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center rounded-full border-2 border-[#013E37] bg-white p-1.5 shadow-lg"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: '9999px',
-              border: '2px solid #013E37',
-              background: '#F8FBFB',
-              padding: '6px',
-              boxShadow: '0 12px 30px rgba(1, 62, 55, 0.15)'
-            }}
+            className="flex items-center w-full rounded-full border-2 border-[#013E37] bg-white/95 p-1 md:p-1.5 shadow-lg"
           >
             {/* Search Icon */}
-            <div style={{ paddingLeft: '14px', color: '#013E37', display: 'flex', alignItems: 'center' }}>
+            <div className="pl-3 md:pl-4 text-[#013E37] flex items-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -122,51 +113,20 @@ const Home = () => {
               placeholder="Search for calculators, cameras, or lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent px-4 py-3 text-[#013E37] placeholder-[#013E37]/60 font-medium focus:outline-none"
-              style={{
-                flex: 1,
-                border: 'none',
-                background: 'transparent',
-                padding: '12px 16px',
-                color: '#013E37',
-                fontSize: '1rem',
-                fontWeight: 500,
-                outline: 'none'
-              }}
+              className="w-full min-w-0 bg-transparent px-3 py-2 md:px-4 md:py-3 text-sm md:text-base text-[#013E37] placeholder-[#013E37]/60 font-medium focus:outline-none"
             />
 
             {/* Search Button attached inside right */}
             <button
               type="submit"
-              className="bg-[#013E37] text-[#FFEFB3] font-bold px-7 py-3 rounded-full hover:bg-[#02594F] transition-all shrink-0"
-              style={{
-                background: '#013E37',
-                color: '#FFEFB3',
-                fontWeight: 700,
-                padding: '11px 26px',
-                borderRadius: '9999px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '0.95rem',
-                flexShrink: 0
-              }}
+              className="bg-[#013E37] text-[#FFEFB3] font-bold text-xs md:text-sm px-4 py-2 md:px-7 md:py-3 rounded-full hover:bg-[#02594F] transition-all shrink-0"
             >
               Search
             </button>
           </form>
 
           {/* Clickable Category Pills */}
-          <div
-            className="mt-4 flex flex-wrap items-center justify-center gap-2"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              marginTop: '18px'
-            }}
-          >
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -174,19 +134,11 @@ const Home = () => {
                   key={cat}
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
-                  className="rounded-full px-4 py-1.5 text-sm transition-all"
-                  style={{
-                    padding: '6px 16px',
-                    fontSize: '0.84rem',
-                    borderRadius: '9999px',
-                    border: '1px solid #013E37',
-                    background: isSelected ? '#013E37' : 'rgba(255, 255, 255, 0.75)',
-                    color: isSelected ? '#FFEFB3' : '#013E37',
-                    fontWeight: isSelected ? 700 : 500,
-                    cursor: 'pointer',
-                    boxShadow: isSelected ? '0 4px 12px rgba(1, 62, 55, 0.2)' : 'none',
-                    transition: 'all 0.2s'
-                  }}
+                  className={`rounded-full text-xs md:text-sm px-3 py-1.5 md:px-4 transition-all cursor-pointer border ${
+                    isSelected
+                      ? 'border-[#013E37] bg-[#013E37] text-[#FFEFB3] font-bold shadow-sm'
+                      : 'border-[#013E37]/40 bg-white/80 text-[#013E37] font-medium hover:border-[#013E37] hover:bg-white'
+                  }`}
                 >
                   {cat}
                 </button>
