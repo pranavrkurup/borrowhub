@@ -74,132 +74,54 @@ const Home = () => {
   return (
     <div className="container" style={{ paddingBottom: '90px' }}>
       
-      {/* Hero Section matching exact screenshot */}
-      <section className="text-center py-10 md:py-14 px-4 sm:px-6 md:px-8">
-        
-        {/* Top Palette Pill Badge from image */}
-        <div className="inline-flex items-center gap-2.5 px-5 py-1.5 rounded-full border border-[#013E37]/60 text-xs md:text-sm font-bold text-[#013E37] mb-8">
-          <span className="w-3 h-3 rounded-full border border-[#013E37] bg-transparent inline-block" />
-          <span>Butter #FFEEB3</span>
-          <span className="text-[#013E37]/40">•</span>
-          <span className="w-3 h-3 rounded-full bg-[#013E37] inline-block" />
-          <span>Green #013E37</span>
-        </div>
-
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.12] text-[#013E37] mb-6 tracking-tight">
+      {/* Hero Section */}
+      <div className="text-center max-w-4xl mx-auto pt-16 pb-8 px-4">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-[#013E37] mb-6 tracking-tight">
           Borrow What You Need. <br />
-          <span className="underline decoration-[#013E37] underline-offset-[10px] decoration-3">
+          <span className="underline decoration-4 underline-offset-8">
             Share What You Have.
           </span>
         </h1>
 
-        <p className="text-base md:text-lg text-[#013E37]/85 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-          College peer-to-peer equipment sharing built with the signature{' '}
-          <strong className="font-extrabold text-[#013E37]">Butter & Green</strong>{' '}
-          aesthetic. Access scientific calculators, textbooks, IoT kits, and DSLR cameras across campus.
+        <p className="text-lg text-[#013E37]/80 mb-10">
+          A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
-        {/* Reference Palette Dual Card matching exact screenshot */}
-        <div style={{
-          maxWidth: '420px',
-          margin: '0 auto 36px',
-          borderRadius: '24px',
-          overflow: 'hidden',
-          boxShadow: '0 20px 45px rgba(1, 62, 55, 0.18)',
-          border: '1px solid rgba(1, 62, 55, 0.25)'
-        }}>
-          {/* Top Half: Butter Background #FFEFB3 with Green Script #013E37 */}
-          <div style={{
-            background: '#FFEFB3',
-            padding: '28px 20px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              fontFamily: "'Damion', cursive",
-              fontSize: '2.6rem',
-              color: '#013E37',
-              lineHeight: 1,
-              marginBottom: '4px'
-            }}>
-              Butter
-            </div>
-            <div style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              color: '#013E37',
-              letterSpacing: '1.5px'
-            }}>
-              #FFEFB3
-            </div>
-          </div>
-
-          {/* Bottom Half: Green Background #013E37 with Butter Script #FFEFB3 */}
-          <div style={{
-            background: '#013E37',
-            padding: '28px 20px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              fontFamily: "'Damion', cursive",
-              fontSize: '2.6rem',
-              color: '#FFEFB3',
-              lineHeight: 1,
-              marginBottom: '4px'
-            }}>
-              Green
-            </div>
-            <div style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              color: '#FFEFB3',
-              letterSpacing: '1.5px'
-            }}>
-              #013E37
-            </div>
-          </div>
-        </div>
-
-        {/* Search Component wrapper */}
-        <div className="w-full max-w-2xl mx-auto mb-8">
-          
-          {/* Pill-Shaped Search Input matching screenshot */}
+        <div className="w-full flex flex-col items-center justify-center mt-2">
+          {/* Search Bar */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center w-full max-w-2xl mx-auto bg-[#EFF6F6] border-2 border-[#013E37] rounded-full p-1.5 pl-5 overflow-hidden shadow-sm"
+            className="flex items-center w-full max-w-3xl bg-white border-2 border-[#013E37] rounded-full p-1.5 shadow-lg mb-6"
           >
             {/* Search Icon */}
-            <div className="text-[#013E37] flex items-center shrink-0 mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="pl-4 text-[#013E37] flex items-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </div>
 
-            {/* Input Field */}
             <input
               type="text"
               placeholder="Search for calculators, cameras, or lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-2 py-2 text-[#013E37] placeholder-[#013E37]/70 outline-none min-w-0 font-medium text-sm md:text-base"
+              className="flex-1 bg-transparent px-4 py-3 text-[#013E37] placeholder-[#013E37]/50 font-medium outline-none text-lg"
             />
 
-            {/* Search Button matching screenshot */}
             <button
               type="submit"
-              className="bg-[#013E37] text-[#FFEFB3] px-7 py-2.5 rounded-full font-bold text-sm shrink-0 hover:bg-[#02594F] transition-colors"
+              className="bg-[#013E37] text-[#FFEFB3] font-bold px-8 py-3 rounded-full hover:bg-[#02594F] transition-colors"
             >
               Search
             </button>
           </form>
 
-          {/* Clickable Category Pills matching screenshot */}
-          <div className="flex flex-wrap justify-center gap-2.5 mt-5">
+          {/* Category Pills */}
+          <div className="flex flex-wrap justify-center gap-3 w-full">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -209,8 +131,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "border border-[#013E37] bg-[#013E37] text-[#FFEFB3] px-5 py-1.5 rounded-full text-xs md:text-sm font-bold shadow-sm transition-all cursor-pointer"
-                      : "border border-[#013E37] bg-transparent text-[#013E37] px-5 py-1.5 rounded-full text-xs md:text-sm font-medium hover:bg-[#013E37]/10 transition-all cursor-pointer"
+                      ? "bg-[#013E37] text-[#FFEFB3] border-2 border-[#013E37] px-5 py-2 rounded-full font-semibold"
+                      : "border-2 border-[#013E37] text-[#013E37] px-5 py-2 rounded-full font-semibold hover:bg-[#013E37] hover:text-[#FFEFB3] transition-colors"
                   }
                 >
                   {cat}
@@ -219,7 +141,7 @@ const Home = () => {
             })}
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Active Filters Summary */}
       {(searchQuery || selectedCategory !== 'All') && !loading && (
