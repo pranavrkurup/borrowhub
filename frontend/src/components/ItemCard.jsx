@@ -57,6 +57,10 @@ const ItemCard = ({ item, user, onStatusChange }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [message, setMessage] = useState('');
 
   const isOwner = user && item.ownerId && (
     item.ownerId._id === user._id || item.ownerId === user._id
@@ -64,7 +68,12 @@ const ItemCard = ({ item, user, onStatusChange }) => {
 
   const statusConfig = getStatusConfig(item.status);
 
-  const handleRequestBorrow = async () => {
+  const handleConfirmRequest = async () => {
+    if (!startDate || !endDate) {
+      setError('Please select both start and end dates.');
+      return;
+    }
+
     if (!user) {
       navigate('/login');
       return;
@@ -89,19 +98,40 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         },
       };
 
-      const res = await axios.put(
-        `https://borrowhub-backend-9hji.onrender.com/api/items/${item._id}/request`,
-        {},
+      await axios.post(
+        'https://borrowhub-backend-9hji.onrender.com/api/requests',
+        {
+          itemId: item._id,
+          lenderId: item.ownerId,
+          startDate,
+          endDate,
+          message,
+        },
         config
       );
 
+      try {
+        await axios.put(
+          `https://borrowhub-backend-9hji.onrender.com/api/items/${item._id}/request`,
+          {},
+          config
+        );
+      } catch {
+        // Proceed even if PUT fails
+      }
+
       setLoading(false);
+      setShowModal(false);
+      setStartDate('');
+      setEndDate('');
+      setMessage('');
+
       if (onStatusChange) {
-        onStatusChange(res.data);
+        onStatusChange({ ...item, status: 'Requested' });
       }
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to request item');
+      setError(err.response?.data?.message || 'Failed to submit borrow request');
     }
   };
 
@@ -226,7 +256,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           </div>
         ) : item.status === 'Available' ? (
           <button
-            onClick={handleRequestBorrow}
+            onClick={() => setShowModal(true)}
             disabled={loading}
             className="glass-button btn-primary"
             style={{ width: '100%', padding: '14px' }}
@@ -259,6 +289,84 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           </button>
         )}
       </div>
+
+      {/* Borrow Request Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-[#FFEFB3] border-4 border-[#013E37] rounded-xl p-6 w-full max-w-md relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-[#013E37] mb-4">
+              Request to Borrow: {item.title}
+            </h3>
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded-lg mb-4 text-sm">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-bold text-[#013E37] mb-1">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-[#013E37] mb-1">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-[#013E37] mb-1">
+                Message
+              </label>
+              <textarea
+                rows="3"
+                placeholder="Why do you need this item?"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-2">
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 border-2 border-[#013E37] text-[#013E37] font-bold rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmRequest}
+                disabled={loading}
+                className="bg-[#013E37] text-[#FFEFB3] font-bold px-4 py-2 rounded-lg"
+              >
+                {loading ? 'Submitting...' : 'Confirm Request'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
