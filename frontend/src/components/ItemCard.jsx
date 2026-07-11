@@ -4,19 +4,19 @@ import { useNavigate } from 'react-router-dom';
 
 const getBadgeClass = (category) => {
   switch (category) {
-    case 'Electronics': return 'badge-cyan';
-    case 'Books': return 'badge-purple';
-    case 'Lab Equipment': return 'badge-pink';
-    case 'Sports': return 'badge-emerald';
-    default: return 'badge-amber';
+    case 'Electronics': return 'badge-butter';
+    case 'Books': return 'badge-green';
+    case 'Lab Equipment': return 'badge-butter';
+    case 'Sports': return 'badge-green';
+    default: return 'badge-butter';
   }
 };
 
 const getConditionBadgeClass = (condition) => {
   switch (condition) {
-    case 'Like New': return 'badge-emerald';
-    case 'Good': return 'badge-cyan';
-    default: return 'badge-amber';
+    case 'Like New': return 'badge-butter';
+    case 'Good': return 'badge-green';
+    default: return 'badge-butter';
   }
 };
 
@@ -24,35 +24,31 @@ const getStatusConfig = (status) => {
   switch (status) {
     case 'Available':
       return {
-        badgeClass: 'badge-emerald',
         label: '● Available',
-        color: '#34d399',
-        bgColor: 'rgba(16, 185, 129, 0.15)',
-        borderColor: 'rgba(16, 185, 129, 0.35)'
+        bgColor: 'var(--status-available-bg)',
+        borderColor: 'var(--status-available-border)',
+        color: 'var(--status-available-text)'
       };
     case 'Requested':
       return {
-        badgeClass: 'badge-amber',
         label: '⏳ Requested',
-        color: '#fbbf24',
-        bgColor: 'rgba(245, 158, 11, 0.18)',
-        borderColor: 'rgba(245, 158, 11, 0.35)'
+        bgColor: 'var(--status-requested-bg)',
+        borderColor: 'var(--status-requested-border)',
+        color: 'var(--status-requested-text)'
       };
     case 'Borrowed':
       return {
-        badgeClass: 'badge-red',
         label: '🔒 Borrowed',
-        color: '#f87171',
-        bgColor: 'rgba(239, 68, 68, 0.15)',
-        borderColor: 'rgba(239, 68, 68, 0.35)'
+        bgColor: 'var(--status-borrowed-bg)',
+        borderColor: 'var(--status-borrowed-border)',
+        color: 'var(--status-borrowed-text)'
       };
     default:
       return {
-        badgeClass: 'badge-cyan',
         label: status || 'Available',
-        color: '#00f0ff',
-        bgColor: 'rgba(0, 240, 255, 0.15)',
-        borderColor: 'rgba(0, 240, 255, 0.35)'
+        bgColor: 'var(--status-available-bg)',
+        borderColor: 'var(--status-available-border)',
+        color: 'var(--status-available-text)'
       };
   }
 };
@@ -130,8 +126,8 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           overflow: 'hidden',
           position: 'relative',
           marginBottom: '18px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          background: 'rgba(0,0,0,0.3)'
+          border: '1px solid var(--border-subtle)',
+          background: 'var(--bg-input)'
         }}>
           <img
             src={item.imageUrl}
@@ -145,15 +141,15 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             </span>
           </div>
           <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
-            <span className={`badge ${getConditionBadgeClass(item.condition)}`} style={{ background: 'rgba(11, 15, 25, 0.85)', backdropFilter: 'blur(4px)' }}>
+            <span className={`badge ${getConditionBadgeClass(item.condition)}`}>
               {item.condition}
             </span>
           </div>
         </div>
 
         {/* Title, Status Badge & Description */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
-          <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.3 }}>
             {item.title}
           </h3>
           {/* Status Badge */}
@@ -168,24 +164,23 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               whiteSpace: 'nowrap',
               background: statusConfig.bgColor,
               color: statusConfig.color,
-              border: `1px solid ${statusConfig.borderColor}`,
-              boxShadow: `0 0 12px ${statusConfig.bgColor}`
+              border: `1px solid ${statusConfig.borderColor}`
             }}
           >
             {statusConfig.label}
           </span>
         </div>
 
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.55, marginBottom: '14px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', lineHeight: 1.55, marginBottom: '16px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {item.description}
         </p>
 
         {error && (
           <div style={{
-            color: '#f87171',
+            color: '#FF8A8A',
             fontSize: '0.82rem',
             background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            border: '1px solid rgba(239, 68, 68, 0.35)',
             padding: '8px 12px',
             borderRadius: '8px',
             marginBottom: '12px'
@@ -202,13 +197,13 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '12px 0',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          fontSize: '0.85rem',
-          color: '#cbd5e1',
+          borderTop: '1px solid var(--border-subtle)',
+          fontSize: '0.86rem',
+          color: 'var(--text-secondary)',
           marginBottom: '16px'
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            👤 <strong style={{ color: '#fff' }}>{item.ownerId?.name || 'Campus Student'}</strong>
+            👤 <strong style={{ color: 'var(--text-main)' }}>{item.ownerId?.name || 'Campus Student'}</strong>
           </span>
           <span style={{ color: statusConfig.color, fontWeight: 600 }}>
             {item.status || 'Available'}
@@ -220,12 +215,12 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             width: '100%',
             padding: '12px',
             textAlign: 'center',
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: 'var(--bg-input)',
             borderRadius: '12px',
-            color: 'var(--text-muted)',
+            color: 'var(--text-main)',
             fontWeight: 600,
             fontSize: '0.9rem',
-            border: '1px dashed rgba(255, 255, 255, 0.2)'
+            border: '1px dashed var(--border-strong)'
           }}>
             ✨ You own this item
           </div>
@@ -245,9 +240,9 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             style={{
               width: '100%',
               padding: '14px',
-              background: 'rgba(245, 158, 11, 0.15)',
-              border: '1px solid rgba(245, 158, 11, 0.35)',
-              color: '#fbbf24',
+              background: 'var(--status-requested-bg)',
+              border: '1px solid var(--status-requested-border)',
+              color: 'var(--status-requested-text)',
               opacity: 0.85,
               cursor: 'not-allowed'
             }}

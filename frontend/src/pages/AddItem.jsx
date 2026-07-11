@@ -77,8 +77,8 @@ const AddItem = () => {
       <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
         <div className="glass-panel" style={{ maxWidth: '480px', margin: '0 auto', padding: '40px' }}>
           <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
-          <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: '#fff' }}>Access Denied</h3>
-          <p style={{ color: 'var(--text-muted)', margin: '0 0 24px', lineHeight: 1.5 }}>
+          <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--text-main)' }}>Access Denied</h3>
+          <p style={{ color: 'var(--text-secondary)', margin: '0 0 24px', lineHeight: 1.5 }}>
             You must be signed in with your college student account to list equipment or books for lending.
           </p>
           <button onClick={() => navigate('/login')} className="glass-button btn-primary" style={{ width: '100%', padding: '14px' }}>
@@ -94,19 +94,19 @@ const AddItem = () => {
       <div className="glass-panel animate-fade-in" style={{ maxWidth: '700px', margin: '0 auto', padding: '40px' }}>
         
         <div style={{ textAlign: 'center', marginBottom: '34px' }}>
-          <div className="badge badge-cyan" style={{ marginBottom: '14px' }}>
+          <div className="badge badge-butter" style={{ marginBottom: '14px' }}>
             📦 Campus Inventory Listing
           </div>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' }}>
+          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
             List Equipment for Sharing
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.98rem', marginTop: '8px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.98rem', marginTop: '8px' }}>
             Help fellow students by lending scientific tools, textbooks, and hardware devices.
           </p>
         </div>
 
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#f87171', padding: '16px', borderRadius: '12px', marginBottom: '24px', fontSize: '0.9rem' }}>
+          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '16px', borderRadius: '12px', marginBottom: '24px', fontSize: '0.9rem' }}>
             ⚠️ {error}
           </div>
         )}
@@ -115,8 +115,8 @@ const AddItem = () => {
           
           {/* Title */}
           <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: '#cbd5e1', marginBottom: '8px' }}>
-              Item Title <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
+              Item Title *
             </label>
             <input
               type="text"
@@ -131,33 +131,33 @@ const AddItem = () => {
           {/* Category & Condition Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: '#cbd5e1', marginBottom: '8px' }}>
-                Category <span style={{ color: 'var(--accent-pink)' }}>*</span>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
+                Category *
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="glass-input"
-                style={{ background: 'var(--bg-secondary)', cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               >
                 {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat} style={{ color: '#013E37', background: '#FFEFB3' }}>{cat}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: '#cbd5e1', marginBottom: '8px' }}>
-                Condition <span style={{ color: 'var(--accent-pink)' }}>*</span>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
+                Condition *
               </label>
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
                 className="glass-input"
-                style={{ background: 'var(--bg-secondary)', cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               >
                 {CONDITIONS.map((cond) => (
-                  <option key={cond} value={cond}>{cond}</option>
+                  <option key={cond} value={cond} style={{ color: '#013E37', background: '#FFEFB3' }}>{cond}</option>
                 ))}
               </select>
             </div>
@@ -165,8 +165,8 @@ const AddItem = () => {
 
           {/* Description */}
           <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: '#cbd5e1', marginBottom: '8px' }}>
-              Description & Specifications <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
+              Description & Specifications *
             </label>
             <textarea
               rows="4"
@@ -181,16 +181,16 @@ const AddItem = () => {
 
           {/* Image Upload */}
           <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: '#cbd5e1', marginBottom: '8px' }}>
-              Item Photo <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
+              Item Photo *
             </label>
             
             <div style={{
-              border: '2px dashed rgba(0, 240, 255, 0.3)',
+              border: '2px dashed var(--border-strong)',
               borderRadius: '16px',
               padding: '28px',
               textAlign: 'center',
-              background: 'rgba(0, 240, 255, 0.03)',
+              background: 'var(--bg-input)',
               cursor: 'pointer',
               position: 'relative',
               transition: 'all 0.2s'
@@ -212,13 +212,13 @@ const AddItem = () => {
 
               {imagePreview ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-                  <img src={imagePreview} alt="Preview" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 10px 20px rgba(0,0,0,0.3)' }} />
-                  <span style={{ fontSize: '0.88rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>✓ Click or drag to change image</span>
+                  <img src={imagePreview} alt="Preview" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '14px', border: '1px solid var(--border-strong)', boxShadow: 'var(--shadow-main)' }} />
+                  <span style={{ fontSize: '0.88rem', color: 'var(--accent-main)', fontWeight: 600 }}>✓ Click or drag to change image</span>
                 </div>
               ) : (
                 <div style={{ padding: '20px 0' }}>
                   <div style={{ fontSize: '2.8rem', marginBottom: '10px' }}>📸</div>
-                  <p style={{ fontWeight: 700, color: '#fff', marginBottom: '6px', fontSize: '1.05rem' }}>Click or drag photo to upload</p>
+                  <p style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px', fontSize: '1.05rem' }}>Click or drag photo to upload</p>
                   <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Supports JPG, PNG, WEBP (Max 5MB)</p>
                 </div>
               )}

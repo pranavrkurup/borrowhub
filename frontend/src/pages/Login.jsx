@@ -37,25 +37,25 @@ const Login = () => {
       <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '440px', padding: '40px', position: 'relative' }}>
         
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <div className="badge badge-cyan" style={{ marginBottom: '12px' }}>
+          <div className="badge badge-butter" style={{ marginBottom: '12px' }}>
             🔐 Campus Sign In
           </div>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#fff' }}>Welcome Back</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '6px' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-main)' }}>Welcome Back</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '6px' }}>
             Sign in with your college account to borrow and share inventory.
           </p>
         </div>
 
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171', padding: '14px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px', textAlign: 'center' }}>
+          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '14px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px', textAlign: 'center' }}>
             ⚠️ {error}
           </div>
         )}
 
         <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#cbd5e1' }}>
-              College Email <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
+              College Email *
             </label>
             <input 
               type="email" 
@@ -68,8 +68,8 @@ const Login = () => {
           </div>
           
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: '#cbd5e1' }}>
-              Password <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
+              Password *
             </label>
             <input 
               type="password" 
@@ -91,13 +91,12 @@ const Login = () => {
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
           Don't have an account yet?{' '}
-          <Link to="/register" style={{ color: 'var(--accent-cyan)', textDecoration: 'none', fontWeight: 700 }}>
+          <Link to="/register" style={{ color: 'var(--accent-main)', textDecoration: 'none', fontWeight: 700 }}>
             Create an Account
           </Link>
         </div>
-
       </div>
     </div>
   );

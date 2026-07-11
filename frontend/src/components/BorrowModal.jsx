@@ -14,7 +14,6 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     e.preventDefault();
     setError(null);
 
-    // Grab token from AuthContext or fallback to localStorage
     const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
     const token = user?.token || storedUser?.token;
 
@@ -61,9 +60,9 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(7, 9, 19, 0.82)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
+      background: 'rgba(0, 0, 0, 0.55)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -77,8 +76,8 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
           maxWidth: '480px',
           padding: '32px',
           position: 'relative',
-          border: '1px solid rgba(0, 240, 255, 0.35)',
-          boxShadow: '0 0 40px rgba(0, 240, 255, 0.2)'
+          border: '1px solid var(--border-strong)',
+          boxShadow: 'var(--shadow-main)'
         }}
       >
         {/* Close Button */}
@@ -88,11 +87,11 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
             position: 'absolute',
             top: '20px',
             right: '20px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: '#fff',
-            width: '32px',
-            height: '32px',
+            background: 'var(--bg-input)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-main)',
+            width: '34px',
+            height: '34px',
             borderRadius: '50%',
             cursor: 'pointer',
             fontSize: '1rem',
@@ -101,27 +100,25 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
             justifyContent: 'center',
             transition: 'all 0.2s'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
-          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
         >
           ✕
         </button>
 
-        <div className="badge badge-cyan" style={{ marginBottom: '10px' }}>
+        <div className="badge badge-butter" style={{ marginBottom: '10px' }}>
           🤝 Peer Lending Request
         </div>
-        <h3 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: '6px', color: '#fff' }}>
+        <h3 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-main)' }}>
           Request to Borrow
         </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '22px' }}>
-          You are requesting <strong style={{ color: 'var(--accent-cyan)' }}>{item.title}</strong>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '22px' }}>
+          You are requesting <strong style={{ color: 'var(--accent-main)' }}>{item.title}</strong>
         </p>
 
         {error && (
           <div style={{
             background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
-            color: '#f87171',
+            border: '1px solid rgba(239, 68, 68, 0.35)',
+            color: '#FF8A8A',
             padding: '12px 16px',
             borderRadius: '12px',
             fontSize: '0.9rem',
@@ -133,8 +130,8 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
-              Start Date <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+              Start Date *
             </label>
             <input
               type="date"
@@ -142,13 +139,12 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="glass-input"
-              style={{ colorScheme: 'dark' }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
-              End Date (Expected Return) <span style={{ color: 'var(--accent-pink)' }}>*</span>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+              End Date (Expected Return) *
             </label>
             <input
               type="date"
@@ -156,12 +152,11 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className="glass-input"
-              style={{ colorScheme: 'dark' }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
               Message to Owner (Optional)
             </label>
             <textarea
