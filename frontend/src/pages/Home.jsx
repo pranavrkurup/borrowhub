@@ -75,19 +75,19 @@ const Home = () => {
     <div className="container" style={{ paddingBottom: '90px' }}>
       
       {/* Hero Section */}
-      <div className="text-center max-w-4xl mx-auto pt-16 pb-8 px-4">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-[#013E37] mb-6 tracking-tight">
+      <div className="w-full flex flex-col items-center justify-center pt-12 pb-8 px-4">
+        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-[#013E37] mb-6 tracking-tight">
           Borrow What You Need. <br />
           <span className="underline decoration-4 underline-offset-8">
             Share What You Have.
           </span>
         </h1>
 
-        <p className="text-lg text-[#013E37]/80 mb-10">
+        <p className="text-center max-w-3xl mx-auto text-lg text-[#013E37]/80 mb-10">
           A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
-        <div className="w-full flex flex-col items-center justify-center mt-2">
+        <div className="w-full flex flex-col items-center justify-center mt-6">
           {/* Search Bar */}
           <form
             onSubmit={(e) => {

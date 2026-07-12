@@ -142,17 +142,12 @@ const ItemCard = ({ item, user, onStatusChange }) => {
 
   return (
     <div
-      className="glass-panel"
+      className="flex flex-col h-full bg-[#FFEFB3] border-2 border-[#013E37] rounded-xl overflow-hidden shadow-md glass-panel"
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        overflow: 'hidden',
-        padding: '22px',
         position: 'relative'
       }}
     >
-      <div>
+      <div className="flex-grow p-4 flex flex-col">
         {/* Thumbnail Image */}
         <div style={{
           width: '100%',
@@ -182,7 +177,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           </div>
         </div>
 
-        {/* Title, Status Badge & Description */}
+        {/* Title & Status Badge */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
           <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.3 }}>
             {displayItem.title}
@@ -206,7 +201,15 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           </span>
         </div>
 
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', lineHeight: 1.55, marginBottom: '16px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <p
+          className="text-sm text-[#013E37]/80 mt-2 line-clamp-3 overflow-hidden text-ellipsis"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden'
+          }}
+        >
           {displayItem.description}
         </p>
 
@@ -218,7 +221,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             border: '1px solid rgba(239, 68, 68, 0.35)',
             padding: '8px 12px',
             borderRadius: '8px',
-            marginBottom: '12px'
+            marginTop: '12px'
           }}>
             {error}
           </div>
@@ -226,13 +229,11 @@ const ItemCard = ({ item, user, onStatusChange }) => {
       </div>
 
       {/* Card Footer */}
-      <div>
+      <div className="mt-auto pt-4 border-t border-[#013E37]/10 p-4">
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '12px 0',
-          borderTop: '1px solid var(--border-subtle)',
           fontSize: '0.86rem',
           color: 'var(--text-secondary)',
           marginBottom: '16px'
