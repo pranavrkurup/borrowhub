@@ -111,6 +111,14 @@ body {
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  width: 100%;
+}
+
 /* Glass & Panel System */
 .glass-panel {
   background: var(--bg-panel);

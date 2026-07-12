@@ -248,7 +248,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         {isOwner ? (
           <div style={{
             width: '100%',
-            padding: '10px 12px',
+            padding: '10px 14px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -256,14 +256,29 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             borderRadius: '12px',
             color: 'var(--text-main)',
             fontWeight: 600,
-            fontSize: '0.9rem',
-            border: '1px dashed var(--border-strong)'
+            fontSize: '0.92rem',
+            border: '1px dashed var(--border-strong)',
+            gap: '12px'
           }}>
-            <span>✨ You own this item</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              ✨ You own this item
+            </span>
             <button
               type="button"
               onClick={() => setShowEditModal(true)}
-              className="bg-transparent border-2 border-[#013E37] text-[#013E37] px-4 py-1.5 rounded-lg font-bold hover:bg-[#013E37] hover:text-[#FFEFB3] transition-colors ml-2"
+              style={{
+                background: 'transparent',
+                border: '2px solid #013E37',
+                color: '#013E37',
+                padding: '6px 16px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '0.88rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap'
+              }}
+              className="hover:bg-[#013E37] hover:text-[#FFEFB3]"
             >
               Edit
             </button>
