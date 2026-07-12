@@ -4,7 +4,7 @@ import axios from 'axios';
 const CATEGORIES = ['Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
 const CONDITIONS = ['Like New', 'Good', 'Fair'];
 
-const EditItemModal = ({ item, onClose, onSuccess }) => {
+const EditItemModal = ({ item, user, onClose, onSuccess }) => {
   const [title, setTitle] = useState(item?.title || '');
   const [description, setDescription] = useState(item?.description || '');
   const [category, setCategory] = useState(item?.category || 'Electronics');
@@ -24,7 +24,7 @@ const EditItemModal = ({ item, onClose, onSuccess }) => {
 
     try {
       const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
-      const token = storedUser?.token;
+      const token = user?.token || storedUser?.token;
 
       if (!token) {
         setError('You must be logged in to edit an item.');
@@ -56,8 +56,9 @@ const EditItemModal = ({ item, onClose, onSuccess }) => {
       }
       onClose();
     } catch (err) {
+      console.error('Edit item error:', err);
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to update item details.');
+      setError(err.response?.data?.message || err.message || 'Failed to update item details.');
     }
   };
 

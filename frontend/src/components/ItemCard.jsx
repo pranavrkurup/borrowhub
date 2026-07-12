@@ -388,6 +388,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
       {showEditModal && (
         <EditItemModal
           item={displayItem}
+          user={user}
           onClose={() => setShowEditModal(false)}
           onSuccess={(updatedItem) => {
             setEditedItem(updatedItem);
