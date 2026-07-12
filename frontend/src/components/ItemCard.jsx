@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import EditItemModal from './EditItemModal';
 
 const getBadgeClass = (category) => {
   switch (category) {
@@ -58,15 +59,19 @@ const ItemCard = ({ item, user, onStatusChange }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editedItem, setEditedItem] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [message, setMessage] = useState('');
 
-  const isOwner = user && item.ownerId && (
-    item.ownerId._id === user._id || item.ownerId === user._id
+  const displayItem = editedItem || item;
+
+  const isOwner = user && displayItem.ownerId && (
+    displayItem.ownerId._id === user._id || displayItem.ownerId === user._id
   );
 
-  const statusConfig = getStatusConfig(item.status);
+  const statusConfig = getStatusConfig(displayItem.status);
 
   const handleConfirmRequest = async () => {
     if (!startDate || !endDate) {
@@ -160,19 +165,19 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           background: 'var(--bg-input)'
         }}>
           <img
-            src={item.imageUrl}
-            alt={item.title}
+            src={displayItem.imageUrl}
+            alt={displayItem.title}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
             onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'; }}
           />
           <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px' }}>
-            <span className={`badge ${getBadgeClass(item.category)}`}>
-              {item.category}
+            <span className={`badge ${getBadgeClass(displayItem.category)}`}>
+              {displayItem.category}
             </span>
           </div>
           <div style={{ position: 'absolute', bottom: '12px', right: '12px' }}>
-            <span className={`badge ${getConditionBadgeClass(item.condition)}`}>
-              {item.condition}
+            <span className={`badge ${getConditionBadgeClass(displayItem.condition)}`}>
+              {displayItem.condition}
             </span>
           </div>
         </div>
@@ -180,7 +185,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         {/* Title, Status Badge & Description */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
           <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.3 }}>
-            {item.title}
+            {displayItem.title}
           </h3>
           {/* Status Badge */}
           <span
@@ -202,7 +207,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         </div>
 
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', lineHeight: 1.55, marginBottom: '16px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {item.description}
+          {displayItem.description}
         </p>
 
         {error && (
@@ -233,18 +238,20 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           marginBottom: '16px'
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            👤 <strong style={{ color: 'var(--text-main)' }}>{item.ownerId?.name || 'Campus Student'}</strong>
+            👤 <strong style={{ color: 'var(--text-main)' }}>{displayItem.ownerId?.name || 'Campus Student'}</strong>
           </span>
           <span style={{ color: statusConfig.color, fontWeight: 600 }}>
-            {item.status || 'Available'}
+            {displayItem.status || 'Available'}
           </span>
         </div>
 
         {isOwner ? (
           <div style={{
             width: '100%',
-            padding: '12px',
-            textAlign: 'center',
+            padding: '10px 12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             background: 'var(--bg-input)',
             borderRadius: '12px',
             color: 'var(--text-main)',
@@ -252,9 +259,16 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             fontSize: '0.9rem',
             border: '1px dashed var(--border-strong)'
           }}>
-            ✨ You own this item
+            <span>✨ You own this item</span>
+            <button
+              type="button"
+              onClick={() => setShowEditModal(true)}
+              className="bg-transparent border-2 border-[#013E37] text-[#013E37] px-4 py-1.5 rounded-lg font-bold hover:bg-[#013E37] hover:text-[#FFEFB3] transition-colors ml-2"
+            >
+              Edit
+            </button>
           </div>
-        ) : item.status === 'Available' ? (
+        ) : displayItem.status === 'Available' ? (
           <button
             onClick={() => setShowModal(true)}
             disabled={loading}
@@ -263,7 +277,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           >
             {loading ? '⏳ Requesting...' : '📦 Request to Borrow'}
           </button>
-        ) : item.status === 'Requested' ? (
+        ) : displayItem.status === 'Requested' ? (
           <button
             disabled
             className="glass-button"
@@ -368,6 +382,21 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Edit Item Modal */}
+      {showEditModal && (
+        <EditItemModal
+          item={displayItem}
+          onClose={() => setShowEditModal(false)}
+          onSuccess={(updatedItem) => {
+            setEditedItem(updatedItem);
+            setShowEditModal(false);
+            if (onStatusChange) {
+              onStatusChange(updatedItem);
+            }
+          }}
+        />
       )}
     </div>
   );

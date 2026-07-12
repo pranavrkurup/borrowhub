@@ -97,4 +97,39 @@ const requestItem = async (req, res) => {
     }
 };
 
-module.exports = { createItem, getItems, requestItem };
+// @desc    Update item text details (title, description, category, condition)
+// @route   PUT /api/items/:id
+// @access  Private (Owner only)
+const updateItem = async (req, res) => {
+    try {
+        const item = await Item.findById(req.params.id);
+
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        // Security Check: Verify req.user._id matches item.ownerId
+        const ownerIdString = item.ownerId._id ? item.ownerId._id.toString() : item.ownerId.toString();
+        if (ownerIdString !== req.user._id.toString()) {
+            return res.status(401).json({ message: 'Not authorized to update this item' });
+        }
+
+        const { title, description, category, condition } = req.body;
+
+        if (title !== undefined) item.title = title;
+        if (description !== undefined) item.description = description;
+        if (category !== undefined) item.category = category;
+        if (condition !== undefined) item.condition = condition;
+
+        const updatedItem = await item.save();
+        await updatedItem.populate('ownerId', 'name email');
+
+        res.json(updatedItem);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error updating item', error: error.message });
+    }
+};
+
+module.exports = { createItem, getItems, requestItem, updateItem };
+
