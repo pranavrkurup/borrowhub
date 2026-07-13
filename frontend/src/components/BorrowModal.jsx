@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
@@ -9,6 +9,25 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [bookedDates, setBookedDates] = useState([]);
+
+  // Fetch booked date ranges when the modal opens
+  useEffect(() => {
+    const fetchBookedDates = async () => {
+      try {
+        const { data } = await axios.get(
+          `https://borrowhub-backend-9hji.onrender.com/api/items/${item._id}/booked-dates`
+        );
+        setBookedDates(data);
+      } catch (err) {
+        console.error('Failed to fetch booked dates:', err);
+      }
+    };
+
+    if (item?._id) {
+      fetchBookedDates();
+    }
+  }, [item._id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +44,22 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     if (new Date(startDate) >= new Date(endDate)) {
       setError('End date must be after the start date.');
       return;
+    }
+
+    // Client-side date-overlap validation
+    const userStart = new Date(startDate);
+    const userEnd = new Date(endDate);
+
+    for (const booking of bookedDates) {
+      const bookedStart = new Date(booking.startDate);
+      const bookedEnd = new Date(booking.endDate);
+
+      if (userStart <= bookedEnd && userEnd >= bookedStart) {
+        const fmtStart = bookedStart.toLocaleDateString();
+        const fmtEnd = bookedEnd.toLocaleDateString();
+        setError(`Dates unavailable. The item is booked from ${fmtStart} to ${fmtEnd}.`);
+        return;
+      }
     }
 
     setLoading(true);
@@ -200,3 +235,4 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
 };
 
 export default BorrowModal;
+

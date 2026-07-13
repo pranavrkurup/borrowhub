@@ -284,7 +284,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               Edit
             </button>
           </div>
-        ) : displayItem.status === 'Available' ? (
+        ) : (
           <button
             onClick={() => setShowModal(true)}
             disabled={loading}
@@ -292,30 +292,6 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             style={{ width: '100%', padding: '14px' }}
           >
             {loading ? '⏳ Requesting...' : '📦 Request to Borrow'}
-          </button>
-        ) : displayItem.status === 'Requested' ? (
-          <button
-            disabled
-            className="glass-button"
-            style={{
-              width: '100%',
-              padding: '14px',
-              background: 'var(--status-requested-bg)',
-              border: '1px solid var(--status-requested-border)',
-              color: 'var(--status-requested-text)',
-              opacity: 0.85,
-              cursor: 'not-allowed'
-            }}
-          >
-            ⏳ Requested
-          </button>
-        ) : (
-          <button
-            disabled
-            className="glass-button btn-secondary"
-            style={{ width: '100%', opacity: 0.5, cursor: 'not-allowed' }}
-          >
-            Currently Borrowed
           </button>
         )}
       </div>

@@ -1,7 +1,7 @@
 const BorrowRequest = require('../models/BorrowRequest');
 const Item = require('../models/Item');
 
-// @desc    Create a new borrow request
+// @desc    Create a new borrow request (with date-overlap validation)
 // @route   POST /api/requests
 const createRequest = async (req, res) => {
     try {
@@ -16,7 +16,28 @@ const createRequest = async (req, res) => {
             return res.status(400).json({ message: 'You cannot borrow your own item' });
         }
 
-        // 3. Create the ticket
+        // 3. Date-overlap validation against active bookings
+        const newStart = new Date(startDate);
+        const newEnd = new Date(endDate);
+
+        const activeBookings = await BorrowRequest.find({
+            itemId,
+            status: { $in: ['Approved', 'Borrowed'] },
+        });
+
+        for (const booking of activeBookings) {
+            const existingStart = new Date(booking.startDate);
+            const existingEnd = new Date(booking.endDate);
+
+            // Overlap check: (newStart <= existingEnd) && (newEnd >= existingStart)
+            if (newStart <= existingEnd && newEnd >= existingStart) {
+                return res.status(400).json({
+                    message: 'This item is already booked during these dates.',
+                });
+            }
+        }
+
+        // 4. No overlap — create the ticket
         const request = await BorrowRequest.create({
             itemId,
             borrowerId: req.user._id,
@@ -29,6 +50,22 @@ const createRequest = async (req, res) => {
         res.status(201).json(request);
     } catch (error) {
         res.status(500).json({ message: 'Server Error creating request', error: error.message });
+    }
+};
+
+// @desc    Get booked date ranges for a specific item (Approved/Borrowed only)
+// @route   GET /api/items/:id/booked-dates
+// @access  Public
+const getBookedDates = async (req, res) => {
+    try {
+        const activeBookings = await BorrowRequest.find({
+            itemId: req.params.id,
+            status: { $in: ['Approved', 'Borrowed'] },
+        }).select('startDate endDate -_id');
+
+        res.json(activeBookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error fetching booked dates', error: error.message });
     }
 };
 
@@ -73,4 +110,4 @@ const updateRequestStatus = async (req, res) => {
     }
 };
 
-module.exports = { createRequest, getMyRequests, updateRequestStatus };
+module.exports = { createRequest, getMyRequests, updateRequestStatus, getBookedDates };
