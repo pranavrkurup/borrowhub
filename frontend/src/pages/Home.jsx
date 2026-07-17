@@ -204,8 +204,25 @@ const Home = () => {
 
       {/* Loading State */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
-          ⏳ Loading available campus inventory...
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: '26px',
+          marginTop: '24px'
+        }}>
+          {[...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col h-[400px] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl p-4 animate-pulse"
+            >
+              <div className="w-full h-[210px] bg-[#485550]/10 rounded-2xl mb-4" />
+              <div className="w-3/4 h-6 bg-[#485550]/10 rounded-md mb-3" />
+              <div className="w-full h-4 bg-[#485550]/10 rounded-md mb-2" />
+              <div className="w-full h-4 bg-[#485550]/10 rounded-md mb-2" />
+              <div className="w-2/3 h-4 bg-[#485550]/10 rounded-md mb-2" />
+              <div className="w-full h-12 bg-[#485550]/10 rounded-xl mt-4 mt-auto" />
+            </div>
+          ))}
         </div>
       ) : items.length === 0 ? (
         <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '520px', margin: '30px auto' }}>
