@@ -174,7 +174,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
                 required
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A]"
               />
             </div>
 
@@ -187,7 +187,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
                 required
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A]"
               />
             </div>
           </div>
@@ -202,7 +202,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
               placeholder="E.g., Hey, I have a lab on Tuesday, could I grab this in the morning?"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
+              className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A] mb-4"
               style={{ resize: 'none', fontFamily: 'Outfit, sans-serif' }}
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textAlign: 'right', marginTop: '4px' }}>

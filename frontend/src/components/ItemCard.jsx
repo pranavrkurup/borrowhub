@@ -142,7 +142,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
 
   return (
     <div
-      className="flex flex-col h-full bg-[#FFEFB3] border-2 border-[#013E37] rounded-xl overflow-hidden shadow-md glass-panel"
+      className="flex flex-col h-full bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl overflow-hidden text-[#485550]"
       style={{
         position: 'relative'
       }}
@@ -202,7 +202,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         </div>
 
         <p
-          className="text-sm text-[#013E37]/80 mt-2 line-clamp-3 overflow-hidden text-ellipsis"
+          className="text-sm text-[#485550]/80 mt-2 line-clamp-3 overflow-hidden text-ellipsis"
           style={{
             display: '-webkit-box',
             WebkitLineClamp: 3,
@@ -229,7 +229,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
       </div>
 
       {/* Card Footer */}
-      <div className="mt-auto pt-4 border-t border-[#013E37]/10 p-4">
+      <div className="mt-auto pt-4 border-t border-[#485550]/10 p-4">
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -269,8 +269,8 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               onClick={() => setShowEditModal(true)}
               style={{
                 background: 'transparent',
-                border: '2px solid #013E37',
-                color: '#013E37',
+                border: '2px solid #485550',
+                color: '#485550',
                 padding: '6px 16px',
                 borderRadius: '8px',
                 fontWeight: 700,
@@ -279,7 +279,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
                 transition: 'all 0.2s ease',
                 whiteSpace: 'nowrap'
               }}
-              className="hover:bg-[#013E37] hover:text-[#FFEFB3]"
+              className="hover:bg-[#485550] hover:text-[#F4F6F0]"
             >
               Edit
             </button>
@@ -288,7 +288,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           <button
             onClick={() => setShowModal(true)}
             disabled={loading}
-            className="glass-button btn-primary"
+            className="bg-[#C0EB6A] text-[#485550] font-bold shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 rounded-xl"
             style={{ width: '100%', padding: '14px' }}
           >
             {loading ? '⏳ Requesting...' : '📦 Request to Borrow'}
@@ -303,10 +303,10 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-[#FFEFB3] border-4 border-[#013E37] rounded-xl p-6 w-full max-w-md relative"
+            className="bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl p-6 w-full max-w-md relative text-[#485550]"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold text-[#013E37] mb-4">
+            <h3 className="text-xl font-bold text-[#485550] mb-4">
               Request to Borrow: {item.title}
             </h3>
 
@@ -318,32 +318,32 @@ const ItemCard = ({ item, user, onStatusChange }) => {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="w-full">
-                <label className="block text-sm font-bold text-[#013E37] mb-1">
+                <label className="block text-sm font-bold text-[#485550] mb-1">
                   Item Needed Date
                 </label>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                  className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A]"
                 />
               </div>
 
               <div className="w-full">
-                <label className="block text-sm font-bold text-[#013E37] mb-1">
+                <label className="block text-sm font-bold text-[#485550] mb-1">
                   Expected Return Date
                 </label>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none"
+                  className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-[#013E37] mb-1">
+              <label className="block text-sm font-bold text-[#485550] mb-1">
                 Message
               </label>
               <textarea
@@ -351,7 +351,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
                 placeholder="E.g., Hey, I have a lab on Tuesday, could I grab this in the morning?"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] outline-none mb-4"
+                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] outline-none focus:ring-2 focus:ring-[#C0EB6A] mb-4"
               />
             </div>
 
@@ -359,7 +359,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 border-2 border-[#013E37] text-[#013E37] font-bold rounded-lg"
+                className="px-4 py-2 bg-transparent border-2 border-[#485550] text-[#485550] font-bold rounded-lg hover:bg-[#485550] hover:text-[#F4F6F0] transition-colors duration-200"
               >
                 Cancel
               </button>
@@ -367,7 +367,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
                 type="button"
                 onClick={handleConfirmRequest}
                 disabled={loading}
-                className="bg-[#013E37] text-[#FFEFB3] font-bold px-4 py-2 rounded-lg"
+                className="bg-[#C0EB6A] text-[#485550] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
               >
                 {loading ? 'Submitting...' : 'Confirm Request'}
               </button>

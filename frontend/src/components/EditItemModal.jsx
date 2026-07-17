@@ -68,15 +68,15 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
       onClick={onClose}
     >
       <div
-        className="bg-[#FFEFB3] border-4 border-[#013E37] rounded-xl p-6 w-full max-w-md relative shadow-2xl"
+        className="bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl p-6 w-full max-w-md relative text-[#485550]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-[#013E37]">Edit Item Details</h3>
+          <h3 className="text-xl font-bold text-[#485550]">Edit Item Details</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#013E37] font-bold text-lg hover:opacity-75"
+            className="text-[#485550] font-bold text-lg hover:opacity-75"
           >
             ✕
           </button>
@@ -90,7 +90,7 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-bold text-[#013E37] mb-1">
+            <label className="block text-sm font-bold text-[#485550] mb-1">
               Title
             </label>
             <input
@@ -98,19 +98,19 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] font-medium outline-none focus:ring-2 focus:ring-[#013E37]"
+              className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="w-full">
-              <label className="block text-sm font-bold text-[#013E37] mb-1">
+              <label className="block text-sm font-bold text-[#485550] mb-1">
                 Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] font-medium outline-none focus:ring-2 focus:ring-[#013E37]"
+                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -121,13 +121,13 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
             </div>
 
             <div className="w-full">
-              <label className="block text-sm font-bold text-[#013E37] mb-1">
+              <label className="block text-sm font-bold text-[#485550] mb-1">
                 Condition
               </label>
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] font-medium outline-none focus:ring-2 focus:ring-[#013E37]"
+                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
               >
                 {CONDITIONS.map((cond) => (
                   <option key={cond} value={cond}>
@@ -139,7 +139,7 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-[#013E37] mb-1">
+            <label className="block text-sm font-bold text-[#485550] mb-1">
               Description
             </label>
             <textarea
@@ -147,7 +147,7 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
-              className="w-full bg-white border-2 border-[#013E37] rounded-lg px-3 py-2 text-[#013E37] font-medium outline-none focus:ring-2 focus:ring-[#013E37]"
+              className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
             />
           </div>
 
@@ -156,14 +156,14 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 border-2 border-[#013E37] text-[#013E37] font-bold rounded-lg hover:bg-[#013E37]/10 transition-colors"
+              className="px-4 py-2 bg-transparent border-2 border-[#485550] text-[#485550] font-bold rounded-lg hover:bg-[#485550] hover:text-[#F4F6F0] transition-colors duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#013E37] text-[#FFEFB3] font-bold px-5 py-2 rounded-lg hover:opacity-90 transition-opacity"
+              className="bg-[#C0EB6A] text-[#485550] font-bold px-5 py-2 rounded-lg shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
             >
               {loading ? 'Saving...' : 'Save Changes'}
             </button>

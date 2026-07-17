@@ -76,14 +76,14 @@ const Home = () => {
       
       {/* Hero Section */}
       <div className="w-full flex flex-col items-center justify-center pt-12 pb-8 px-4">
-        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-[#013E37] mb-6 tracking-tight">
+        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-[#485550] mb-6 tracking-tight">
           Borrow What You Need. <br />
           <span className="underline decoration-4 underline-offset-8">
             Share What You Have.
           </span>
         </h1>
 
-        <p className="text-center max-w-3xl mx-auto text-lg text-[#013E37]/80 mb-10">
+        <p className="text-center max-w-3xl mx-auto text-lg text-[#485550]/80 mb-10">
           A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
@@ -94,11 +94,11 @@ const Home = () => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center w-full max-w-3xl bg-white border-2 border-[#013E37] rounded-full p-1.5 shadow-lg mb-6"
+            className="flex items-center w-full max-w-3xl bg-white/70 backdrop-blur-md border border-[#485550]/30 rounded-full p-1.5 shadow-lg mb-6"
           >
             {/* Search Icon */}
-            <div className="pl-4 text-[#013E37] flex items-center shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#013E37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="pl-4 text-[#485550] flex items-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#485550" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
@@ -109,12 +109,12 @@ const Home = () => {
               placeholder="Search for calculators, cameras, or lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-3 text-[#013E37] placeholder-[#013E37]/50 font-medium outline-none text-lg"
+              className="flex-1 bg-transparent px-4 py-3 text-[#485550] placeholder-[#485550]/50 font-medium outline-none text-lg"
             />
 
             <button
               type="submit"
-              className="bg-[#013E37] text-[#FFEFB3] font-bold px-8 py-3 rounded-full hover:bg-[#02594F] transition-colors"
+              className="bg-[#C0EB6A] text-[#485550] font-bold px-8 py-3 rounded-full shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
             >
               Search
             </button>
@@ -131,8 +131,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "bg-[#013E37] text-[#FFEFB3] border-2 border-[#013E37] px-5 py-2 rounded-full font-semibold"
-                      : "border-2 border-[#013E37] text-[#013E37] px-5 py-2 rounded-full font-semibold hover:bg-[#013E37] hover:text-[#FFEFB3] transition-colors"
+                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2 rounded-full font-semibold shadow-md"
+                      : "border-2 border-[#485550] text-[#485550] px-5 py-2 rounded-full font-semibold hover:bg-[#485550] hover:text-[#F4F6F0] transition-colors duration-200"
                   }
                 >
                   {cat}
