@@ -64,6 +64,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [message, setMessage] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const displayItem = editedItem || item;
 
@@ -157,13 +158,18 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           position: 'relative',
           marginBottom: '18px',
           border: '1px solid var(--border-subtle)',
-          background: 'var(--bg-input)'
+          background: 'rgba(255, 255, 255, 0.5)',
+          padding: '12px'
         }}>
           <img
             src={displayItem.imageUrl}
             alt={displayItem.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
-            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'; }}
+            onLoad={() => setImageLoaded(true)}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', transition: 'opacity 0.5s ease-in-out', opacity: imageLoaded ? 1 : 0 }}
+            onError={(e) => {
+              e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
+              setImageLoaded(true);
+            }}
           />
           <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px' }}>
             <span className={`badge ${getBadgeClass(displayItem.category)}`}>
