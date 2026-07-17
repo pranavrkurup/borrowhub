@@ -87,7 +87,7 @@ const Home = () => {
           A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
         </p>
 
-        <div className="w-full flex flex-col items-center justify-center mt-6">
+        <div className="w-full max-w-4xl flex flex-col items-center justify-center mt-8 mb-12">
           {/* Search Bar */}
           <form
             onSubmit={(e) => {
@@ -121,7 +121,7 @@ const Home = () => {
           </form>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap justify-center gap-3 w-full">
+          <div className="flex flex-wrap justify-center items-center gap-3 mt-6 mb-12">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -131,8 +131,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2 rounded-full font-semibold shadow-md"
-                      : "border-2 border-[#485550] text-[#485550] px-5 py-2 rounded-full font-semibold hover:bg-[#485550] hover:text-[#F4F6F0] transition-colors duration-200"
+                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2 rounded-full text-sm font-bold shadow-md transition-all"
+                      : "border-2 border-[#485550] text-[#485550] px-5 py-2 rounded-full text-sm font-bold hover:bg-[#485550] hover:text-[#F4F6F0] transition-all duration-200"
                   }
                 >
                   {cat}
