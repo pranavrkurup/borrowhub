@@ -94,7 +94,7 @@ const Home = () => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="flex items-center w-full max-w-3xl bg-white/70 backdrop-blur-md border border-[#485550]/30 rounded-full p-1.5 shadow-lg mb-6"
+            className="relative flex items-center w-full max-w-3xl bg-white/70 backdrop-blur-md border border-[#485550]/30 rounded-full p-1.5 shadow-lg mb-8"
           >
             {/* Search Icon */}
             <div className="pl-4 text-[#485550] flex items-center shrink-0">
@@ -121,7 +121,7 @@ const Home = () => {
           </form>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap justify-center items-center gap-3 mt-6 mb-12">
+          <div className="flex flex-wrap justify-center items-center gap-4 mt-6 mb-12">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -131,8 +131,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2 rounded-full text-sm font-bold shadow-md transition-all"
-                      : "border-2 border-[#485550] text-[#485550] px-5 py-2 rounded-full text-sm font-bold hover:bg-[#485550] hover:text-[#F4F6F0] transition-all duration-200"
+                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2.5 rounded-full text-sm font-bold shadow-md transition-all"
+                      : "border-2 border-[#485550] text-[#485550] px-5 py-2.5 rounded-full text-sm font-bold hover:bg-[#485550] hover:text-[#F4F6F0] transition-all duration-200"
                   }
                 >
                   {cat}
