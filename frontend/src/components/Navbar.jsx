@@ -16,7 +16,7 @@ const Navbar = () => {
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo Left */}
         <Link to="/" className="flex items-center gap-3 no-underline">
-          <img src="/logo.jpg" alt="BorrowHub Logo" className="h-10 w-10 object-contain drop-shadow-sm" />
+          <img src="/logo.png" alt="BorrowHub Logo" className="h-10 w-10 object-contain drop-shadow-sm" />
           <span className="text-2xl font-extrabold tracking-tight text-[#485550]">
             BorrowHub
           </span>
