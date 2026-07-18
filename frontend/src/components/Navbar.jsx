@@ -58,7 +58,7 @@ const Navbar = () => {
 
               <Link
                 to="/register"
-                className="bg-[#C0EB6A] text-[#485550] px-6 py-2 rounded-full font-bold ml-2 hover:bg-[#aade49] transition-colors shadow-sm"
+                className="px-6 py-2.5 rounded-full bg-[#C0EB6A] text-[#485550] font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all"
               >
                 Join as Student
               </Link>

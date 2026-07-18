@@ -79,13 +79,12 @@ const Home = () => {
 
         {/* ── Left Column: Copy & Search ── */}
         <div className="flex flex-col items-start">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-[#485550] tracking-tight leading-tight text-left">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-[#485550] leading-tight tracking-tight mb-6">
             Borrow What You Need.
-            <br />
-            Share What You Have.
+            <span className="text-[#C0EB6A] block mt-2">Share What You Have.</span>
           </h1>
 
-          <p className="text-gray-600 text-lg mt-4 max-w-lg">
+          <p className="text-gray-600 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
             A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
           </p>
 
@@ -95,9 +94,9 @@ const Home = () => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-2 mt-8 flex items-center w-full max-w-lg"
+            className="relative flex items-center w-full max-w-xl bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-2 mb-10 border border-gray-100"
           >
-            <div className="pl-3 text-[#485550] flex items-center shrink-0">
+            <div className="pl-4 text-[#485550] flex items-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#485550" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -108,18 +107,18 @@ const Home = () => {
               placeholder="Search calculators, cameras, lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-3 text-[#485550] placeholder-[#485550]/50 font-medium outline-none text-base"
+              className="w-full bg-transparent pl-6 py-3 outline-none text-gray-700 text-lg placeholder-gray-400"
             />
             <button
               type="submit"
-              className="bg-[#C0EB6A] text-[#485550] font-bold px-7 py-3 rounded-full hover:bg-[#aade49] transition-all duration-200"
+              className="bg-[#C0EB6A] text-[#485550] px-8 py-3 rounded-full font-bold hover:bg-[#aee050] transition-colors"
             >
               Search
             </button>
           </form>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap gap-3 mt-6">
+          <div className="flex flex-wrap gap-4 mb-16">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -129,8 +128,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "bg-[#C0EB6A] text-[#485550] border border-[#C0EB6A] px-5 py-2 rounded-full text-sm font-bold shadow-sm transition-all"
-                      : "border border-[#485550]/20 text-[#485550] bg-transparent hover:bg-gray-50 rounded-full px-5 py-2 text-sm font-bold transition-all duration-200"
+                      ? "px-5 py-2.5 rounded-full bg-[#C0EB6A] text-[#485550] border border-[#C0EB6A] font-medium shadow-sm transition-all cursor-pointer"
+                      : "px-5 py-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-[#C0EB6A] hover:text-[#485550] hover:bg-[#C0EB6A]/10 transition-all cursor-pointer font-medium"
                   }
                 >
                   {cat}
@@ -140,16 +139,16 @@ const Home = () => {
           </div>
 
           {/* Stat Cards */}
-          <div className="flex gap-4 mt-10 w-full max-w-lg">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+          <div className="flex flex-wrap gap-6 mt-12">
+            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
               <div className="text-2xl font-extrabold text-[#485550]">2,500+</div>
               <div className="text-xs text-gray-500 mt-1 font-medium">Active Students</div>
             </div>
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
               <div className="text-2xl font-extrabold text-[#485550]">8,000+</div>
               <div className="text-xs text-gray-500 mt-1 font-medium">Items Shared</div>
             </div>
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
               <div className="text-2xl font-extrabold text-[#485550]">100%</div>
               <div className="text-xs text-gray-500 mt-1 font-medium">Trusted Peers</div>
             </div>
