@@ -74,54 +74,52 @@ const Home = () => {
   return (
     <div className="container" style={{ paddingBottom: '90px' }}>
       
-      {/* Hero Section */}
-      <div className="w-full flex flex-col items-center justify-center pt-12 pb-8 px-4">
-        <h1 className="text-center text-5xl md:text-6xl font-extrabold text-[#485550] mb-6 tracking-tight">
-          Borrow What You Need. <br />
-          <span className="underline decoration-4 underline-offset-8">
+      {/* ─── 2-Column Hero Section ─── */}
+      <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center pt-16 pb-20 px-6">
+
+        {/* ── Left Column: Copy & Search ── */}
+        <div className="flex flex-col items-start">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-[#485550] tracking-tight leading-tight text-left">
+            Borrow What You Need.
+            <br />
             Share What You Have.
-          </span>
-        </h1>
+          </h1>
 
-        <p className="text-center max-w-3xl mx-auto text-lg text-[#485550]/80 mb-10">
-          A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
-        </p>
+          <p className="text-gray-600 text-lg mt-4 max-w-lg">
+            A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
+          </p>
 
-        <div className="w-full max-w-4xl flex flex-col items-center justify-center mt-8 mb-12">
           {/* Search Bar */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchItems(searchQuery, selectedCategory);
             }}
-            className="relative flex items-center w-full max-w-3xl bg-white/70 backdrop-blur-md border border-[#485550]/30 rounded-full p-1.5 shadow-lg mb-8"
+            className="rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-2 mt-8 flex items-center w-full max-w-lg"
           >
-            {/* Search Icon */}
-            <div className="pl-4 text-[#485550] flex items-center shrink-0">
+            <div className="pl-3 text-[#485550] flex items-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#485550" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </div>
-
             <input
               type="text"
-              placeholder="Search for calculators, cameras, or lab kits..."
+              placeholder="Search calculators, cameras, lab kits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-3 text-[#485550] placeholder-[#485550]/50 font-medium outline-none text-lg"
+              className="flex-1 bg-transparent px-4 py-3 text-[#485550] placeholder-[#485550]/50 font-medium outline-none text-base"
             />
-
             <button
               type="submit"
-              className="bg-[#C0EB6A] text-[#485550] font-bold px-8 py-3 rounded-full shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-[#C0EB6A] text-[#485550] font-bold px-7 py-3 rounded-full hover:bg-[#aade49] transition-all duration-200"
             >
               Search
             </button>
           </form>
 
           {/* Category Pills */}
-          <div className="flex flex-wrap justify-center items-center gap-4 mt-6 mb-12">
+          <div className="flex flex-wrap gap-3 mt-6">
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
@@ -131,8 +129,8 @@ const Home = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={
                     isSelected
-                      ? "bg-[#C0EB6A] text-[#485550] border-2 border-[#C0EB6A] px-5 py-2.5 rounded-full text-sm font-bold shadow-md transition-all"
-                      : "border-2 border-[#485550] text-[#485550] px-5 py-2.5 rounded-full text-sm font-bold hover:bg-[#485550] hover:text-[#F4F6F0] transition-all duration-200"
+                      ? "bg-[#C0EB6A] text-[#485550] border border-[#C0EB6A] px-5 py-2 rounded-full text-sm font-bold shadow-sm transition-all"
+                      : "border border-[#485550]/20 text-[#485550] bg-transparent hover:bg-gray-50 rounded-full px-5 py-2 text-sm font-bold transition-all duration-200"
                   }
                 >
                   {cat}
@@ -140,6 +138,85 @@ const Home = () => {
               );
             })}
           </div>
+
+          {/* Stat Cards */}
+          <div className="flex gap-4 mt-10 w-full max-w-lg">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+              <div className="text-2xl font-extrabold text-[#485550]">2,500+</div>
+              <div className="text-xs text-gray-500 mt-1 font-medium">Active Students</div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+              <div className="text-2xl font-extrabold text-[#485550]">8,000+</div>
+              <div className="text-xs text-gray-500 mt-1 font-medium">Items Shared</div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-1 text-center">
+              <div className="text-2xl font-extrabold text-[#485550]">100%</div>
+              <div className="text-xs text-gray-500 mt-1 font-medium">Trusted Peers</div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Right Column: Hub Graphic ── */}
+        <div className="relative w-full aspect-square flex items-center justify-center hidden lg:flex">
+          {/* Concentric Orbit Circles */}
+          <div className="border border-gray-200 rounded-full absolute w-[85%] h-[85%] opacity-60"></div>
+          <div className="border border-gray-200 rounded-full absolute w-[62%] h-[62%] opacity-50"></div>
+          <div className="border border-gray-100 rounded-full absolute w-[40%] h-[40%] opacity-40"></div>
+
+          {/* Center Logo */}
+          <img
+            src="/logo.png"
+            alt="BorrowHub Logo"
+            className="w-24 h-24 object-contain drop-shadow-lg z-10 relative"
+          />
+
+          {/* Floating Item: Camera */}
+          <div className="absolute top-8 right-12 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3s' }}>
+            <span className="text-2xl">📷</span>
+            <span className="text-sm font-semibold text-[#485550]">DSLR Camera</span>
+          </div>
+
+          {/* Floating Item: Calculator */}
+          <div className="absolute bottom-24 left-6 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}>
+            <span className="text-2xl">🧮</span>
+            <span className="text-sm font-semibold text-[#485550]">Calculator</span>
+          </div>
+
+          {/* Floating Item: Textbook */}
+          <div className="absolute top-1/3 left-2 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
+            <span className="text-2xl">📚</span>
+            <span className="text-sm font-semibold text-[#485550]">Textbooks</span>
+          </div>
+
+          {/* Floating Item: IoT Kit */}
+          <div className="absolute bottom-12 right-8 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3.8s', animationDelay: '0.8s' }}>
+            <span className="text-2xl">🔌</span>
+            <span className="text-sm font-semibold text-[#485550]">IoT Kit</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Value Props Row (Full Width) ─── */}
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 py-12 px-6 border-t border-gray-100">
+        <div className="flex flex-col items-center text-center gap-2">
+          <span className="text-3xl">🎓</span>
+          <h3 className="font-bold text-[#485550] text-sm">Verified Students</h3>
+          <p className="text-xs text-gray-500">Every user is a verified college student on your campus.</p>
+        </div>
+        <div className="flex flex-col items-center text-center gap-2">
+          <span className="text-3xl">🤝</span>
+          <h3 className="font-bold text-[#485550] text-sm">Easy & Safe</h3>
+          <p className="text-xs text-gray-500">Simple request flow with built-in accountability tracking.</p>
+        </div>
+        <div className="flex flex-col items-center text-center gap-2">
+          <span className="text-3xl">♻️</span>
+          <h3 className="font-bold text-[#485550] text-sm">Sustainable Campus</h3>
+          <p className="text-xs text-gray-500">Share resources instead of buying new — reduce waste together.</p>
+        </div>
+        <div className="flex flex-col items-center text-center gap-2">
+          <span className="text-3xl">💰</span>
+          <h3 className="font-bold text-[#485550] text-sm">Save Money</h3>
+          <p className="text-xs text-gray-500">Why buy when you can borrow? Keep more in your pocket.</p>
         </div>
       </div>
 

@@ -58,9 +58,9 @@ const Navbar = () => {
 
               <Link
                 to="/register"
-                className="bg-[#013E37] text-[#FFEFB3] px-6 py-2.5 rounded-full font-bold ml-2 hover:bg-[#02594F] transition-colors shadow-sm"
+                className="bg-[#C0EB6A] text-[#485550] px-6 py-2 rounded-full font-bold ml-2 hover:bg-[#aade49] transition-colors shadow-sm"
               >
-                Sign Up
+                Join as Student
               </Link>
             </>
           )}
