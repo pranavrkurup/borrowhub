@@ -24,7 +24,7 @@ const Navbar = () => {
 
         {/* Links Right */}
         <div className="flex items-center gap-6 font-semibold text-[#013E37] text-base">
-          <Link to="/" className="hover:opacity-80 transition-opacity">
+          <Link to="/feed" className="hover:opacity-80 transition-opacity">
             Feed
           </Link>
 
