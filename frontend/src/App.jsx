@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AddItem from './pages/AddItem';
 import Dashboard from './pages/Dashboard';
+import BorrowRequests from './pages/BorrowRequests';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/add-item" element={<AddItem />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/requests" element={<BorrowRequests />} />
           </Routes>
         </main>
       </div>
