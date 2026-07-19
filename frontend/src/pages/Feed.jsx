@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import BorrowModal from '../components/BorrowModal';
@@ -17,20 +17,8 @@ const Feed = () => {
   const [selectedItemForBorrow, setSelectedItemForBorrow] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  const debounceRef = useRef(null);
-
   useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    debounceRef.current = setTimeout(() => {
-      fetchItems(searchQuery, selectedCategory);
-    }, 400);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+    fetchItems(searchQuery, selectedCategory);
   }, [searchQuery, selectedCategory]);
 
   const fetchItems = async (search, category) => {
