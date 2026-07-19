@@ -53,12 +53,6 @@ const Dashboard = () => {
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  // New item form state
-  const [newItemTitle, setNewItemTitle] = useState('');
-  const [newItemCategory, setNewItemCategory] = useState('Electronics');
-  const [newItemCondition, setNewItemCondition] = useState('Like New');
-  const [newItemImage, setNewItemImage] = useState(null);
-
   useEffect(() => {
     if (!user && !localStorage.getItem('userInfo')) {
       navigate('/login');
@@ -157,25 +151,27 @@ const Dashboard = () => {
     showSuccess('✏️ Item updated successfully!');
   };
 
-  const handleAddItemSubmit = (e) => {
+  const handleAddItem = (e) => {
     e.preventDefault();
-    const newMockItem = {
+    const formData = new FormData(e.target);
+    const imageFile = formData.get('image');
+    const imageUrl = imageFile && imageFile.name ? URL.createObjectURL(imageFile) : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
+
+    const newItem = {
+      id: Date.now(), // Generate unique ID
       _id: `mock-${Date.now()}`,
-      title: newItemTitle.trim() || 'New Campus Item',
-      description: 'Listed by user from dashboard inventory.',
-      category: newItemCategory,
-      condition: newItemCondition,
-      status: 'Available',
-      imageUrl: newItemImage 
-        ? URL.createObjectURL(newItemImage) 
-        : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+      title: formData.get('title'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      condition: formData.get('condition'),
+      image: imageUrl,
+      imageUrl: imageUrl,
+      status: 'Available'
     };
-    setMyItems((prev) => [newMockItem, ...prev]);
+
+    setMyItems((prevItems) => [newItem, ...prevItems]);
     setIsAddingItem(false);
-    setNewItemTitle('');
-    setNewItemCategory('Electronics');
-    setNewItemCondition('Like New');
-    setNewItemImage(null);
+    e.target.reset();
     showSuccess('🎉 Item added successfully!');
   };
 
@@ -894,17 +890,16 @@ const Dashboard = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleAddItemSubmit} className="flex flex-col gap-4 text-[#485550]">
+            <form onSubmit={handleAddItem} className="flex flex-col gap-4 text-[#485550]">
               <div>
                 <label className="block text-sm font-bold text-[#485550] mb-1">
                   Item Name
                 </label>
                 <input
                   type="text"
+                  name="title"
                   required
                   placeholder="e.g. Sony Noise-Canceling Headphones"
-                  value={newItemTitle}
-                  onChange={(e) => setNewItemTitle(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
                 />
               </div>
@@ -915,8 +910,8 @@ const Dashboard = () => {
                     Category
                   </label>
                   <select
-                    value={newItemCategory}
-                    onChange={(e) => setNewItemCategory(e.target.value)}
+                    name="category"
+                    required
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
                   >
                     <option value="Electronics">Electronics</option>
@@ -932,8 +927,8 @@ const Dashboard = () => {
                     Condition
                   </label>
                   <select
-                    value={newItemCondition}
-                    onChange={(e) => setNewItemCondition(e.target.value)}
+                    name="condition"
+                    required
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
                   >
                     <option value="Like New">Like New</option>
@@ -945,16 +940,25 @@ const Dashboard = () => {
 
               <div>
                 <label className="block text-sm font-bold text-[#485550] mb-1">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  required
+                  rows="3"
+                  placeholder="Provide details about condition, features, or accessories..."
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-[#485550] mb-1">
                   Image
                 </label>
                 <input
                   type="file"
+                  name="image"
                   accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setNewItemImage(e.target.files[0]);
-                    }
-                  }}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm text-[#485550] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#C0EB6A] file:text-[#485550] hover:file:bg-[#aade49] outline-none transition-all cursor-pointer"
                 />
               </div>
