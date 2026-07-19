@@ -50,7 +50,14 @@ const Dashboard = () => {
   // Inventory state
   const [myItems, setMyItems] = useState(MOCK_ITEMS);
   const [editingItem, setEditingItem] = useState(null);
+  const [isAddingItem, setIsAddingItem] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  // New item form state
+  const [newItemTitle, setNewItemTitle] = useState('');
+  const [newItemCategory, setNewItemCategory] = useState('Electronics');
+  const [newItemCondition, setNewItemCondition] = useState('Like New');
+  const [newItemImage, setNewItemImage] = useState(null);
 
   useEffect(() => {
     if (!user && !localStorage.getItem('userInfo')) {
@@ -148,6 +155,28 @@ const Dashboard = () => {
     );
     setEditingItem(null);
     showSuccess('✏️ Item updated successfully!');
+  };
+
+  const handleAddItemSubmit = (e) => {
+    e.preventDefault();
+    const newMockItem = {
+      _id: `mock-${Date.now()}`,
+      title: newItemTitle.trim() || 'New Campus Item',
+      description: 'Listed by user from dashboard inventory.',
+      category: newItemCategory,
+      condition: newItemCondition,
+      status: 'Available',
+      imageUrl: newItemImage 
+        ? URL.createObjectURL(newItemImage) 
+        : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+    };
+    setMyItems((prev) => [newMockItem, ...prev]);
+    setIsAddingItem(false);
+    setNewItemTitle('');
+    setNewItemCategory('Electronics');
+    setNewItemCondition('Like New');
+    setNewItemImage(null);
+    showSuccess('🎉 Item added successfully!');
   };
 
   const showSuccess = (message) => {
@@ -567,8 +596,9 @@ const Dashboard = () => {
             >
               📦 My Inventory
             </h2>
-            <Link
-              to="/add-item"
+            <button
+              type="button"
+              onClick={() => setIsAddingItem(true)}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -579,13 +609,14 @@ const Dashboard = () => {
                 color: '#485550',
                 fontWeight: 700,
                 fontSize: '0.95rem',
-                textDecoration: 'none',
+                border: 'none',
+                cursor: 'pointer',
                 boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
                 transition: 'all 0.2s ease',
               }}
             >
               + Add New Item
-            </Link>
+            </button>
           </div>
 
           {/* Items Grid */}
@@ -615,8 +646,9 @@ const Dashboard = () => {
               <p style={{ color: '#7a8a82', marginBottom: '24px', lineHeight: 1.5 }}>
                 Start sharing with your campus community by listing your first item!
               </p>
-              <Link
-                to="/add-item"
+              <button
+                type="button"
+                onClick={() => setIsAddingItem(true)}
                 style={{
                   display: 'inline-block',
                   padding: '12px 28px',
@@ -624,12 +656,13 @@ const Dashboard = () => {
                   background: '#C0EB6A',
                   color: '#485550',
                   fontWeight: 700,
-                  textDecoration: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
                   boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
                 }}
               >
                 + List Your First Item
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -836,6 +869,114 @@ const Dashboard = () => {
           onClose={() => setEditingItem(null)}
           onSuccess={handleEditItemSuccess}
         />
+      )}
+
+      {/* Add New Item Modal Overlay */}
+      {isAddingItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          onClick={() => setIsAddingItem(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[#485550]">List a New Item</h3>
+              <button
+                type="button"
+                onClick={() => setIsAddingItem(false)}
+                className="text-gray-400 hover:text-[#485550] font-bold text-lg p-1 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleAddItemSubmit} className="flex flex-col gap-4 text-[#485550]">
+              <div>
+                <label className="block text-sm font-bold text-[#485550] mb-1">
+                  Item Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Sony Noise-Canceling Headphones"
+                  value={newItemTitle}
+                  onChange={(e) => setNewItemTitle(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full">
+                  <label className="block text-sm font-bold text-[#485550] mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={newItemCategory}
+                    onChange={(e) => setNewItemCategory(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
+                  >
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                    <option value="Lab Equipment">Lab Equipment</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-sm font-bold text-[#485550] mb-1">
+                    Condition
+                  </label>
+                  <select
+                    value={newItemCondition}
+                    onChange={(e) => setNewItemCondition(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A] focus:border-transparent transition-all"
+                  >
+                    <option value="Like New">Like New</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-[#485550] mb-1">
+                  Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setNewItemImage(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm text-[#485550] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#C0EB6A] file:text-[#485550] hover:file:bg-[#aade49] outline-none transition-all cursor-pointer"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsAddingItem(false)}
+                  className="px-5 py-2.5 bg-transparent border-2 border-gray-200 text-gray-600 font-bold rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#C0EB6A] text-[#485550] font-bold px-6 py-2.5 rounded-xl shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                >
+                  Post Item
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
