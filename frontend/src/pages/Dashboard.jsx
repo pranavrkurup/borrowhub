@@ -56,18 +56,9 @@ const Dashboard = () => {
   // Tab state
   const [activeTab, setActiveTab] = useState('inventory'); // Tabs: 'inventory', 'incoming', 'outgoing'
 
-  // Mock request data
-  const [incomingRequests, setIncomingRequests] = useState([
-    { id: 'req-1', itemName: 'Canon DSLR Camera', requesterName: 'Alice Johnson', status: 'Pending' },
-    { id: 'req-2', itemName: 'TI-84 Scientific Calculator', requesterName: 'Bob Williams', status: 'Pending' },
-    { id: 'req-3', itemName: 'Organic Chemistry Textbook', requesterName: 'Carol Martinez', status: 'Pending' },
-  ]);
-
-  const [myRequests, setMyRequests] = useState([
-    { id: 'out-1', itemName: 'MacBook Pro Charger', ownerName: 'David Lee', status: 'Approved' },
-    { id: 'out-2', itemName: 'Physics Lab Manual', ownerName: 'Emma Chen', status: 'Pending' },
-    { id: 'out-3', itemName: 'Wireless Mouse', ownerName: 'Frank Nguyen', status: 'Approved' },
-  ]);
+  // Request state (initialized with empty arrays for real API data)
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [myRequests, setMyRequests] = useState([]);
 
   useEffect(() => {
     if (!user && !localStorage.getItem('userInfo')) {
@@ -110,6 +101,71 @@ const Dashboard = () => {
 
     fetchMyItems();
   }, [user]);
+
+  // Fetch borrow requests (incoming and outgoing) from backend
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+        const token = user?.token || storedUser?.token;
+        const currentUserId = user?._id || storedUser?._id;
+        if (!token) return;
+
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+        };
+
+        const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/requests', config);
+        if (res.data && Array.isArray(res.data)) {
+          const allRequests = res.data;
+          const incoming = allRequests.filter((req) => {
+            const lender = req.lenderId?._id || req.lenderId;
+            return String(lender) === String(currentUserId);
+          });
+          const outgoing = allRequests.filter((req) => {
+            const borrower = req.borrowerId?._id || req.borrowerId;
+            return String(borrower) === String(currentUserId);
+          });
+          setIncomingRequests(incoming);
+          setMyRequests(outgoing);
+        }
+      } catch (err) {
+        console.error('Failed to fetch requests:', err);
+      }
+    };
+
+    fetchRequests();
+  }, [user, activeTab]);
+
+  const handleRequestAction = async (requestId, actionType) => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      const token = user?.token || storedUser?.token;
+      if (!token) return;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const statusToSend = actionType === 'Denied' ? 'Rejected' : actionType;
+      await axios.put(`https://borrowhub-backend-9hji.onrender.com/api/requests/${requestId}`, { status: statusToSend }, config);
+
+      setIncomingRequests((prev) =>
+        prev.map((r) =>
+          (r._id === requestId || r.id === requestId)
+            ? { ...r, status: statusToSend }
+            : r
+        )
+      );
+      showSuccess(`✅ Request ${actionType.toLowerCase()} successfully!`);
+    } catch (err) {
+      console.error('Failed to update request status:', err);
+      showSuccess('❌ Failed to update request status.');
+    }
+  };
 
   if (!user && !localStorage.getItem('userInfo')) {
     return null;
@@ -979,7 +1035,7 @@ const Dashboard = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {incomingRequests.map((req) => (
                     <div
-                      key={req.id}
+                      key={req._id || req.id}
                       style={{
                         background: 'rgba(255, 255, 255, 0.65)',
                         backdropFilter: 'blur(16px)',
@@ -1013,7 +1069,7 @@ const Dashboard = () => {
                             marginBottom: '4px',
                           }}
                         >
-                          {req.itemName}
+                          {req.itemId?.title || req.itemName || 'Item'}
                         </h3>
                         <p
                           style={{
@@ -1022,7 +1078,7 @@ const Dashboard = () => {
                             fontWeight: 500,
                           }}
                         >
-                          Requested by <span style={{ color: '#485550', fontWeight: 600 }}>{req.requesterName}</span>
+                          Requested by <span style={{ color: '#485550', fontWeight: 600 }}>{req.borrowerId?.name || req.requesterName || 'Student'}</span>
                         </p>
                       </div>
 
@@ -1030,13 +1086,7 @@ const Dashboard = () => {
                       {req.status === 'Pending' ? (
                         <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
                           <button
-                            onClick={() =>
-                              setIncomingRequests((prev) =>
-                                prev.map((r) =>
-                                  r.id === req.id ? { ...r, status: 'Approved' } : r
-                                )
-                              )
-                            }
+                            onClick={() => handleRequestAction(req._id || req.id, 'Approved')}
                             style={{
                               padding: '10px 20px',
                               borderRadius: '12px',
@@ -1053,13 +1103,7 @@ const Dashboard = () => {
                             ✓ Approve
                           </button>
                           <button
-                            onClick={() =>
-                              setIncomingRequests((prev) =>
-                                prev.map((r) =>
-                                  r.id === req.id ? { ...r, status: 'Denied' } : r
-                                )
-                              )
-                            }
+                            onClick={() => handleRequestAction(req._id || req.id, 'Denied')}
                             style={{
                               padding: '10px 20px',
                               borderRadius: '12px',
@@ -1169,7 +1213,7 @@ const Dashboard = () => {
                     const isApproved = req.status === 'Approved';
                     return (
                       <div
-                        key={req.id}
+                        key={req._id || req.id}
                         style={{
                           background: 'rgba(255, 255, 255, 0.65)',
                           backdropFilter: 'blur(16px)',
@@ -1203,7 +1247,7 @@ const Dashboard = () => {
                               marginBottom: '4px',
                             }}
                           >
-                            {req.itemName}
+                            {req.itemId?.title || req.itemName || 'Item'}
                           </h3>
                           <p
                             style={{
@@ -1212,7 +1256,7 @@ const Dashboard = () => {
                               fontWeight: 500,
                             }}
                           >
-                            Owned by <span style={{ color: '#485550', fontWeight: 600 }}>{req.ownerName}</span>
+                            Owned by <span style={{ color: '#485550', fontWeight: 600 }}>{req.lenderId?.name || req.ownerName || 'Campus Peer'}</span>
                           </p>
                         </div>
 
@@ -1225,15 +1269,29 @@ const Dashboard = () => {
                             fontWeight: 700,
                             background: isApproved
                               ? 'rgba(192, 235, 106, 0.2)'
+                              : req.status === 'Rejected' || req.status === 'Denied'
+                              ? 'rgba(239, 68, 68, 0.1)'
                               : 'rgba(72, 85, 80, 0.08)',
-                            color: isApproved ? '#5a7a1a' : '#7a8a82',
+                            color: isApproved
+                              ? '#5a7a1a'
+                              : req.status === 'Rejected' || req.status === 'Denied'
+                              ? '#ef4444'
+                              : '#7a8a82',
                             border: `1px solid ${
-                              isApproved ? '#C0EB6A' : 'rgba(72, 85, 80, 0.2)'
+                              isApproved
+                                ? '#C0EB6A'
+                                : req.status === 'Rejected' || req.status === 'Denied'
+                                ? 'rgba(239, 68, 68, 0.35)'
+                                : 'rgba(72, 85, 80, 0.2)'
                             }`,
                             flexShrink: 0,
                           }}
                         >
-                          {isApproved ? '✓ Approved' : '● Pending'}
+                          {isApproved
+                            ? '✓ Approved'
+                            : req.status === 'Rejected' || req.status === 'Denied'
+                            ? '✕ Denied'
+                            : '● Pending'}
                         </span>
                       </div>
                     );
