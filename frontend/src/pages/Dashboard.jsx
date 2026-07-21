@@ -52,15 +52,19 @@ const Dashboard = () => {
     const fetchMyItems = async () => {
       try {
         const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
-        const token = user?.token || storedUser?.token;
-        if (!token) return;
+        const currentUserId = user?._id || storedUser?._id;
+        if (!currentUserId) return;
 
-        const config = {
-          headers: { Authorization: `Bearer ${token}` },
-        };
+        // Fetch all items from the public endpoint (no /my route exists on backend)
+        const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items');
 
-        const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items/my', config);
-        setMyItems(res.data || []);
+        // Filter to only items owned by the current user
+        const myOwnedItems = (res.data || []).filter((item) => {
+          const ownerId = item.ownerId?._id || item.ownerId;
+          return String(ownerId) === String(currentUserId);
+        });
+
+        setMyItems(myOwnedItems);
       } catch (err) {
         console.error('Failed to fetch inventory items:', err);
         setMyItems([]);
