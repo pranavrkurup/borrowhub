@@ -53,6 +53,22 @@ const Dashboard = () => {
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
 
+  // Tab state
+  const [activeTab, setActiveTab] = useState('inventory'); // Tabs: 'inventory', 'incoming', 'outgoing'
+
+  // Mock request data
+  const [incomingRequests, setIncomingRequests] = useState([
+    { id: 'req-1', itemName: 'Canon DSLR Camera', requesterName: 'Alice Johnson', status: 'Pending' },
+    { id: 'req-2', itemName: 'TI-84 Scientific Calculator', requesterName: 'Bob Williams', status: 'Pending' },
+    { id: 'req-3', itemName: 'Organic Chemistry Textbook', requesterName: 'Carol Martinez', status: 'Pending' },
+  ]);
+
+  const [myRequests, setMyRequests] = useState([
+    { id: 'out-1', itemName: 'MacBook Pro Charger', ownerName: 'David Lee', status: 'Approved' },
+    { id: 'out-2', itemName: 'Physics Lab Manual', ownerName: 'Emma Chen', status: 'Pending' },
+    { id: 'out-3', itemName: 'Wireless Mouse', ownerName: 'Frank Nguyen', status: 'Approved' },
+  ]);
+
   useEffect(() => {
     if (!user && !localStorage.getItem('userInfo')) {
       navigate('/login');
@@ -570,289 +586,661 @@ const Dashboard = () => {
         </div>
 
         {/* ====================================== */}
-        {/* RIGHT COLUMN — Inventory Management    */}
+        {/* RIGHT COLUMN — Tabbed Management       */}
         {/* ====================================== */}
         <div className="lg:col-span-2">
 
-          {/* Header with title + Add button */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '24px',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: '1.6rem',
-                fontWeight: 800,
-                color: '#485550',
-              }}
+          {/* Tab Navigation */}
+          <div className="flex gap-6 border-b border-gray-200 mb-6">
+            <button
+              onClick={() => setActiveTab('inventory')}
+              className={`pb-2 transition-colors cursor-pointer text-sm ${
+                activeTab === 'inventory'
+                  ? 'border-b-4 border-[#C0EB6A] text-[#485550] font-bold'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+              style={{ background: 'none', border: activeTab === 'inventory' ? undefined : 'none', borderBottom: activeTab === 'inventory' ? '4px solid #C0EB6A' : 'none' }}
             >
               📦 My Inventory
-            </h2>
+            </button>
             <button
-              type="button"
-              onClick={() => setIsAddingItem(true)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '12px 24px',
-                borderRadius: '14px',
-                background: '#C0EB6A',
-                color: '#485550',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
-                transition: 'all 0.2s ease',
-              }}
+              onClick={() => setActiveTab('incoming')}
+              className={`pb-2 transition-colors cursor-pointer text-sm ${
+                activeTab === 'incoming'
+                  ? 'border-b-4 border-[#C0EB6A] text-[#485550] font-bold'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+              style={{ background: 'none', border: activeTab === 'incoming' ? undefined : 'none', borderBottom: activeTab === 'incoming' ? '4px solid #C0EB6A' : 'none' }}
             >
-              + Add New Item
+              📥 Incoming Requests
+            </button>
+            <button
+              onClick={() => setActiveTab('outgoing')}
+              className={`pb-2 transition-colors cursor-pointer text-sm ${
+                activeTab === 'outgoing'
+                  ? 'border-b-4 border-[#C0EB6A] text-[#485550] font-bold'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+              style={{ background: 'none', border: activeTab === 'outgoing' ? undefined : 'none', borderBottom: activeTab === 'outgoing' ? '4px solid #C0EB6A' : 'none' }}
+            >
+              📤 My Requests
             </button>
           </div>
 
-          {/* Items Grid */}
-          {myItems.length === 0 ? (
-            <div
-              style={{
-                background: 'rgba(255, 255, 255, 0.65)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(255, 255, 255, 0.7)',
-                borderRadius: '20px',
-                padding: '60px 24px',
-                textAlign: 'center',
-              }}
-            >
-              <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
-              <h3
+          {/* ===== INVENTORY TAB ===== */}
+          {activeTab === 'inventory' && (
+            <>
+              {/* Header with Add button */}
+              <div
                 style={{
-                  fontSize: '1.4rem',
-                  fontWeight: 700,
-                  color: '#485550',
-                  marginBottom: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '24px',
                 }}
               >
-                No items in your inventory
-              </h3>
-              <p style={{ color: '#7a8a82', marginBottom: '24px', lineHeight: 1.5 }}>
-                Start sharing with your campus community by listing your first item!
-              </p>
-              <button
-                type="button"
-                onClick={() => setIsAddingItem(true)}
-                style={{
-                  display: 'inline-block',
-                  padding: '12px 28px',
-                  borderRadius: '14px',
-                  background: '#C0EB6A',
-                  color: '#485550',
-                  fontWeight: 700,
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
-                }}
-              >
-                + List Your First Item
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {myItems.map((item) => {
-                const statusColor = getStatusColor(item.status);
-                return (
-                  <div
-                    key={item._id}
+                <h2
+                  style={{
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    color: '#485550',
+                  }}
+                >
+                  My Inventory
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setIsAddingItem(true)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '12px 24px',
+                    borderRadius: '14px',
+                    background: '#C0EB6A',
+                    color: '#485550',
+                    fontWeight: 700,
+                    fontSize: '0.95rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  + Add New Item
+                </button>
+              </div>
+
+              {/* Items Grid */}
+              {myItems.length === 0 ? (
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.65)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    borderRadius: '20px',
+                    padding: '60px 24px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+                  <h3
                     style={{
-                      background: 'rgba(255, 255, 255, 0.65)',
-                      backdropFilter: 'blur(16px)',
-                      WebkitBackdropFilter: 'blur(16px)',
-                      border: '1px solid rgba(255, 255, 255, 0.7)',
-                      borderRadius: '20px',
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-4px)';
-                      e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
+                      fontSize: '1.4rem',
+                      fontWeight: 700,
+                      color: '#485550',
+                      marginBottom: '10px',
                     }}
                   >
-                    {/* Item Image */}
-                    <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
-                      <img
-                        src={item.imageUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'}
-                        alt={item.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                        onError={(e) => {
-                          e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
-                        }}
-                      />
-                      {/* Status Badge */}
-                      <span
-                        style={{
-                          position: 'absolute',
-                          top: '12px',
-                          right: '12px',
-                          padding: '4px 12px',
-                          borderRadius: '999px',
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          background: statusColor.bg,
-                          border: `1px solid ${statusColor.border}`,
-                          color: statusColor.text,
-                          backdropFilter: 'blur(8px)',
-                        }}
-                      >
-                        ● {item.status || 'Available'}
-                      </span>
-                    </div>
-
-                    {/* Item Details */}
-                    <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <h3
-                        style={{
-                          fontSize: '1.1rem',
-                          fontWeight: 700,
-                          color: '#485550',
-                          marginBottom: '6px',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {item.title}
-                      </h3>
-
+                    No items in your inventory
+                  </h3>
+                  <p style={{ color: '#7a8a82', marginBottom: '24px', lineHeight: 1.5 }}>
+                    Start sharing with your campus community by listing your first item!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingItem(true)}
+                    style={{
+                      display: 'inline-block',
+                      padding: '12px 28px',
+                      borderRadius: '14px',
+                      background: '#C0EB6A',
+                      color: '#485550',
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
+                    }}
+                  >
+                    + List Your First Item
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {myItems.map((item) => {
+                    const statusColor = getStatusColor(item.status);
+                    return (
                       <div
+                        key={item._id}
                         style={{
+                          background: 'rgba(255, 255, 255, 0.65)',
+                          backdropFilter: 'blur(16px)',
+                          WebkitBackdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.7)',
+                          borderRadius: '20px',
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                          overflow: 'hidden',
                           display: 'flex',
-                          gap: '8px',
-                          marginBottom: '10px',
-                          flexWrap: 'wrap',
+                          flexDirection: 'column',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-4px)';
+                          e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
                         }}
                       >
-                        <span
-                          style={{
-                            padding: '2px 10px',
-                            borderRadius: '999px',
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            background: 'rgba(72, 85, 80, 0.08)',
-                            color: '#5e6e66',
-                          }}
-                        >
-                          {item.category}
-                        </span>
-                        <span
-                          style={{
-                            padding: '2px 10px',
-                            borderRadius: '999px',
-                            fontSize: '0.75rem',
-                            fontWeight: 600,
-                            background: 'rgba(72, 85, 80, 0.08)',
-                            color: '#5e6e66',
-                          }}
-                        >
-                          {item.condition}
-                        </span>
+                        {/* Item Image */}
+                        <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
+                          <img
+                            src={item.imageUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'}
+                            alt={item.title}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                            onError={(e) => {
+                              e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
+                            }}
+                          />
+                          {/* Status Badge */}
+                          <span
+                            style={{
+                              position: 'absolute',
+                              top: '12px',
+                              right: '12px',
+                              padding: '4px 12px',
+                              borderRadius: '999px',
+                              fontSize: '0.78rem',
+                              fontWeight: 700,
+                              background: statusColor.bg,
+                              border: `1px solid ${statusColor.border}`,
+                              color: statusColor.text,
+                              backdropFilter: 'blur(8px)',
+                            }}
+                          >
+                            ● {item.status || 'Available'}
+                          </span>
+                        </div>
+
+                        {/* Item Details */}
+                        <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                          <h3
+                            style={{
+                              fontSize: '1.1rem',
+                              fontWeight: 700,
+                              color: '#485550',
+                              marginBottom: '6px',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {item.title}
+                          </h3>
+
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '8px',
+                              marginBottom: '10px',
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            <span
+                              style={{
+                                padding: '2px 10px',
+                                borderRadius: '999px',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                background: 'rgba(72, 85, 80, 0.08)',
+                                color: '#5e6e66',
+                              }}
+                            >
+                              {item.category}
+                            </span>
+                            <span
+                              style={{
+                                padding: '2px 10px',
+                                borderRadius: '999px',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                background: 'rgba(72, 85, 80, 0.08)',
+                                color: '#5e6e66',
+                              }}
+                            >
+                              {item.condition}
+                            </span>
+                          </div>
+
+                          <p
+                            style={{
+                              color: '#7a8a82',
+                              fontSize: '0.88rem',
+                              lineHeight: 1.55,
+                              flex: 1,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {item.description}
+                          </p>
+
+                          {/* Action Buttons */}
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '10px',
+                              marginTop: '16px',
+                              paddingTop: '16px',
+                              borderTop: '1px solid rgba(72, 85, 80, 0.1)',
+                            }}
+                          >
+                            <button
+                              onClick={() => setEditingItem(item)}
+                              style={{
+                                flex: 1,
+                                padding: '10px 16px',
+                                borderRadius: '12px',
+                                border: '1.5px solid rgba(72, 85, 80, 0.25)',
+                                background: 'transparent',
+                                color: '#485550',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(72, 85, 80, 0.06)';
+                                e.currentTarget.style.borderColor = '#485550';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.borderColor = 'rgba(72, 85, 80, 0.25)';
+                              }}
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteItem(item._id)}
+                              style={{
+                                flex: 1,
+                                padding: '10px 16px',
+                                borderRadius: '12px',
+                                border: '1.5px solid rgba(239, 68, 68, 0.35)',
+                                background: 'transparent',
+                                color: '#ef4444',
+                                fontWeight: 600,
+                                fontSize: '0.88rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.06)';
+                                e.currentTarget.style.borderColor = '#ef4444';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+                              }}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                        </div>
                       </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
 
-                      <p
-                        style={{
-                          color: '#7a8a82',
-                          fontSize: '0.88rem',
-                          lineHeight: 1.55,
-                          flex: 1,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {item.description}
-                      </p>
+          {/* ===== INCOMING REQUESTS TAB ===== */}
+          {activeTab === 'incoming' && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '24px',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    color: '#485550',
+                  }}
+                >
+                  Incoming Requests
+                </h2>
+                <span
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '999px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    background: 'rgba(192, 235, 106, 0.2)',
+                    color: '#5a7a1a',
+                    border: '1px solid #C0EB6A',
+                  }}
+                >
+                  {incomingRequests.filter((r) => r.status === 'Pending').length} pending
+                </span>
+              </div>
 
-                      {/* Action Buttons */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '10px',
-                          marginTop: '16px',
-                          paddingTop: '16px',
-                          borderTop: '1px solid rgba(72, 85, 80, 0.1)',
-                        }}
-                      >
-                        <button
-                          onClick={() => setEditingItem(item)}
+              {incomingRequests.length === 0 ? (
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.65)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    borderRadius: '20px',
+                    padding: '60px 24px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+                  <h3
+                    style={{
+                      fontSize: '1.4rem',
+                      fontWeight: 700,
+                      color: '#485550',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    No incoming requests
+                  </h3>
+                  <p style={{ color: '#7a8a82', lineHeight: 1.5 }}>
+                    When someone wants to borrow your items, their requests will appear here.
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {incomingRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.65)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        border: '1px solid rgba(255, 255, 255, 0.7)',
+                        borderRadius: '20px',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                        padding: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '16px',
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
+                      }}
+                    >
+                      {/* Request Info */}
+                      <div style={{ flex: 1 }}>
+                        <h3
                           style={{
-                            flex: 1,
-                            padding: '10px 16px',
-                            borderRadius: '12px',
-                            border: '1.5px solid rgba(72, 85, 80, 0.25)',
-                            background: 'transparent',
+                            fontSize: '1.05rem',
+                            fontWeight: 700,
                             color: '#485550',
-                            fontWeight: 600,
-                            fontSize: '0.88rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(72, 85, 80, 0.06)';
-                            e.currentTarget.style.borderColor = '#485550';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.borderColor = 'rgba(72, 85, 80, 0.25)';
+                            marginBottom: '4px',
                           }}
                         >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteItem(item._id)}
+                          {req.itemName}
+                        </h3>
+                        <p
                           style={{
-                            flex: 1,
-                            padding: '10px 16px',
-                            borderRadius: '12px',
-                            border: '1.5px solid rgba(239, 68, 68, 0.35)',
-                            background: 'transparent',
-                            color: '#ef4444',
-                            fontWeight: 600,
                             fontSize: '0.88rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.06)';
-                            e.currentTarget.style.borderColor = '#ef4444';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+                            color: '#7a8a82',
+                            fontWeight: 500,
                           }}
                         >
-                          🗑️ Delete
-                        </button>
+                          Requested by <span style={{ color: '#485550', fontWeight: 600 }}>{req.requesterName}</span>
+                        </p>
                       </div>
+
+                      {/* Status / Action Buttons */}
+                      {req.status === 'Pending' ? (
+                        <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+                          <button
+                            onClick={() =>
+                              setIncomingRequests((prev) =>
+                                prev.map((r) =>
+                                  r.id === req.id ? { ...r, status: 'Approved' } : r
+                                )
+                              )
+                            }
+                            style={{
+                              padding: '10px 20px',
+                              borderRadius: '12px',
+                              border: 'none',
+                              background: '#C0EB6A',
+                              color: '#485550',
+                              fontWeight: 700,
+                              fontSize: '0.88rem',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
+                              transition: 'all 0.2s ease',
+                            }}
+                          >
+                            ✓ Approve
+                          </button>
+                          <button
+                            onClick={() =>
+                              setIncomingRequests((prev) =>
+                                prev.map((r) =>
+                                  r.id === req.id ? { ...r, status: 'Denied' } : r
+                                )
+                              )
+                            }
+                            style={{
+                              padding: '10px 20px',
+                              borderRadius: '12px',
+                              border: '1.5px solid rgba(239, 68, 68, 0.35)',
+                              background: 'rgba(239, 68, 68, 0.06)',
+                              color: '#ef4444',
+                              fontWeight: 700,
+                              fontSize: '0.88rem',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                            }}
+                          >
+                            ✕ Deny
+                          </button>
+                        </div>
+                      ) : (
+                        <span
+                          style={{
+                            padding: '6px 16px',
+                            borderRadius: '999px',
+                            fontSize: '0.82rem',
+                            fontWeight: 700,
+                            background:
+                              req.status === 'Approved'
+                                ? 'rgba(192, 235, 106, 0.2)'
+                                : 'rgba(239, 68, 68, 0.1)',
+                            color: req.status === 'Approved' ? '#5a7a1a' : '#ef4444',
+                            border: `1px solid ${
+                              req.status === 'Approved' ? '#C0EB6A' : 'rgba(239, 68, 68, 0.35)'
+                            }`,
+                          }}
+                        >
+                          {req.status === 'Approved' ? '✓ Approved' : '✕ Denied'}
+                        </span>
+                      )}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ===== MY REQUESTS (OUTGOING) TAB ===== */}
+          {activeTab === 'outgoing' && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '24px',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    color: '#485550',
+                  }}
+                >
+                  My Requests
+                </h2>
+                <span
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '999px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    background: 'rgba(72, 85, 80, 0.08)',
+                    color: '#485550',
+                  }}
+                >
+                  {myRequests.length} total
+                </span>
+              </div>
+
+              {myRequests.length === 0 ? (
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.65)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.7)',
+                    borderRadius: '20px',
+                    padding: '60px 24px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+                  <h3
+                    style={{
+                      fontSize: '1.4rem',
+                      fontWeight: 700,
+                      color: '#485550',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    No outgoing requests
+                  </h3>
+                  <p style={{ color: '#7a8a82', lineHeight: 1.5 }}>
+                    Browse the feed and request items to borrow from your campus community!
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {myRequests.map((req) => {
+                    const isApproved = req.status === 'Approved';
+                    return (
+                      <div
+                        key={req.id}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.65)',
+                          backdropFilter: 'blur(16px)',
+                          WebkitBackdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.7)',
+                          borderRadius: '20px',
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                          padding: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '16px',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
+                        }}
+                      >
+                        {/* Request Info */}
+                        <div style={{ flex: 1 }}>
+                          <h3
+                            style={{
+                              fontSize: '1.05rem',
+                              fontWeight: 700,
+                              color: '#485550',
+                              marginBottom: '4px',
+                            }}
+                          >
+                            {req.itemName}
+                          </h3>
+                          <p
+                            style={{
+                              fontSize: '0.88rem',
+                              color: '#7a8a82',
+                              fontWeight: 500,
+                            }}
+                          >
+                            Owned by <span style={{ color: '#485550', fontWeight: 600 }}>{req.ownerName}</span>
+                          </p>
+                        </div>
+
+                        {/* Status Badge */}
+                        <span
+                          style={{
+                            padding: '6px 16px',
+                            borderRadius: '999px',
+                            fontSize: '0.82rem',
+                            fontWeight: 700,
+                            background: isApproved
+                              ? 'rgba(192, 235, 106, 0.2)'
+                              : 'rgba(72, 85, 80, 0.08)',
+                            color: isApproved ? '#5a7a1a' : '#7a8a82',
+                            border: `1px solid ${
+                              isApproved ? '#C0EB6A' : 'rgba(72, 85, 80, 0.2)'
+                            }`,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {isApproved ? '✓ Approved' : '● Pending'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
