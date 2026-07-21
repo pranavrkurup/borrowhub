@@ -23,9 +23,12 @@ const Login = () => {
         password,
       });
 
+      // Store the real user data and JWT token
       login(response.data);
+      localStorage.setItem('token', response.data.token);
+
       setLoading(false);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || 'Invalid email or password');

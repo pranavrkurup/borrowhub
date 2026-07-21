@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -12,30 +13,28 @@ const Register = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    // Mock user object for prototype auth
-    const mockUser = {
-      _id: `user-${Date.now()}`,
-      name,
-      email,
-      isLoggedIn: true,
-      token: `mock-token-${Date.now()}`,
-    };
+    try {
+      const response = await axios.post('https://borrowhub-backend-9hji.onrender.com/api/users/register', {
+        name,
+        email,
+        password,
+      });
 
-    // Save to localStorage for persistence
-    localStorage.setItem('borrowhub_user', JSON.stringify(mockUser));
-    localStorage.setItem('userInfo', JSON.stringify(mockUser));
+      // Store the real user data and JWT token
+      login(response.data);
+      localStorage.setItem('token', response.data.token);
 
-    // Simulate realistic network delay
-    setTimeout(() => {
-      login(mockUser);
       setLoading(false);
       navigate('/dashboard');
-    }, 800);
+    } catch (err) {
+      setLoading(false);
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    }
   };
 
   return (
