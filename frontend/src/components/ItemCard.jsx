@@ -75,13 +75,17 @@ const ItemCard = ({ item, user, onStatusChange }) => {
   const statusConfig = getStatusConfig(displayItem.status);
 
   const handleConfirmRequest = async () => {
-    if (!startDate || !endDate) {
-      setError('Please select both start and end dates.');
+    // 2. Retrieve the Token from local storage right at the top
+    const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    const token = localStorage.getItem('token') || storedUser?.token || user?.token;
+
+    if (!token) {
+      setError('You must be logged in to request an item.');
       return;
     }
 
-    if (!user) {
-      navigate('/login');
+    if (!startDate || !endDate) {
+      setError('Please select both start and end dates.');
       return;
     }
 
@@ -89,18 +93,11 @@ const ItemCard = ({ item, user, onStatusChange }) => {
     setLoading(true);
 
     try {
-      const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
-      const token = user?.token || storedUser?.token;
-
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
+      // 3. Inject the Authorization Header
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       };
 
@@ -108,7 +105,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         'https://borrowhub-backend-9hji.onrender.com/api/requests',
         {
           itemId: item._id,
-          lenderId: item.ownerId,
+          lenderId: item.ownerId?._id || item.ownerId,
           startDate,
           endDate,
           message,
@@ -123,9 +120,11 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           config
         );
       } catch {
-        // Proceed even if PUT fails
+        // Proceed even if status update PUT fails
       }
 
+      // 4. Handle Successful Response
+      setError(null);
       setLoading(false);
       setShowModal(false);
       setStartDate('');
@@ -136,8 +135,9 @@ const ItemCard = ({ item, user, onStatusChange }) => {
         onStatusChange({ ...item, status: 'Requested' });
       }
     } catch (err) {
+      // 4. Handle Error Response
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to submit borrow request');
+      setError(err.response?.data?.message || err.message || 'Failed to submit borrow request.');
     }
   };
 

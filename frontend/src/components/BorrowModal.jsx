@@ -34,10 +34,10 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     setError(null);
 
     const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
-    const token = user?.token || storedUser?.token;
+    const token = localStorage.getItem('token') || storedUser?.token || user?.token;
 
     if (!token) {
-      setError('You must be logged in to make a borrow request.');
+      setError('You must be logged in to request an item.');
       return;
     }
 
@@ -67,8 +67,8 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       };
 
@@ -76,6 +76,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
         'https://borrowhub-backend-9hji.onrender.com/api/requests',
         {
           itemId: item._id,
+          lenderId: item.ownerId?._id || item.ownerId,
           startDate,
           endDate,
           message,
@@ -83,11 +84,12 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
         config
       );
 
+      setError(null);
       setLoading(false);
       onSuccess();
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to submit borrow request.');
+      setError(err.response?.data?.message || err.message || 'Failed to submit borrow request.');
     }
   };
 
