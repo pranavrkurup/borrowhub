@@ -4,36 +4,6 @@ import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import EditItemModal from '../components/EditItemModal';
 
-const MOCK_ITEMS = [
-  {
-    _id: 'mock-1',
-    title: 'Canon DSLR Camera',
-    description: 'Canon EOS Rebel T7 with 18-55mm lens kit. Great for photography assignments and campus events.',
-    category: 'Electronics',
-    condition: 'Like New',
-    status: 'Available',
-    imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    _id: 'mock-2',
-    title: 'TI-84 Scientific Calculator',
-    description: 'Texas Instruments TI-84 Plus CE graphing calculator. Perfect for calculus and statistics courses.',
-    category: 'Electronics',
-    condition: 'Good',
-    status: 'Available',
-    imageUrl: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    _id: 'mock-3',
-    title: 'Organic Chemistry Textbook',
-    description: 'Clayden Organic Chemistry, 2nd Edition. Barely used with no highlighting or markings.',
-    category: 'Books',
-    condition: 'Like New',
-    status: 'Requested',
-    imageUrl: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80',
-  },
-];
-
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -48,7 +18,7 @@ const Dashboard = () => {
   const [editProfileData, setEditProfileData] = useState({ ...profileData });
 
   // Inventory state
-  const [myItems, setMyItems] = useState(MOCK_ITEMS);
+  const [myItems, setMyItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -90,12 +60,10 @@ const Dashboard = () => {
         };
 
         const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items/my', config);
-        if (res.data && res.data.length > 0) {
-          setMyItems(res.data);
-        }
+        setMyItems(res.data || []);
       } catch (err) {
-        // Fall back to mock items silently
-        console.log('Using mock items for inventory display.');
+        console.error('Failed to fetch inventory items:', err);
+        setMyItems([]);
       }
     };
 
