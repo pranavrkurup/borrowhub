@@ -28,11 +28,11 @@ const ItemCard = ({ item, user, onStatusChange }) => {
   return (
     <Card className="flex flex-col h-full overflow-hidden group">
       <CardContent className="flex-grow p-0">
-        <div className="relative w-full h-52 bg-muted overflow-hidden">
+        <div className="relative w-full h-56 md:h-64 bg-muted/30 overflow-hidden flex items-center justify-center p-4 md:p-6">
           <img
             src={displayItem.imageUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'}
             alt={displayItem.title}
-            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               e.target.src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
