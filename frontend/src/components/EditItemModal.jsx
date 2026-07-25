@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const CATEGORIES = ['Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
 const CONDITIONS = ['Like New', 'Good', 'Fair'];
@@ -39,8 +39,8 @@ const EditItemModal = ({ item, user, onClose, onSuccess }) => {
         },
       };
 
-      const response = await axios.put(
-        `https://borrowhub-backend-9hji.onrender.com/api/items/${item._id}`,
+      const response = await api.put(
+        `/api/items/${item._id}`,
         {
           title: title.trim(),
           description: description.trim(),

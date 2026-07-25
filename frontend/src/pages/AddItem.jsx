@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -61,7 +61,7 @@ const AddItem = () => {
         },
       };
 
-      await axios.post('https://borrowhub-backend-9hji.onrender.com/api/items', formData, config);
+      await api.post('/api/items', formData, config);
 
       setLoading(false);
       navigate('/');

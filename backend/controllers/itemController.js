@@ -1,4 +1,6 @@
- const Item = require('../models/Item');
+const Item = require('../models/Item');
+const BorrowRequest = require('../models/BorrowRequest');
+const mongoose = require('mongoose');
 
 // @desc    Create a new item listing
 // @route   POST /api/items
@@ -44,13 +46,9 @@ const getItems = async (req, res) => {
             filter.category = category;
         }
 
-        // If a search string is provided, match against title OR description
+        // If a search string is provided, match using full-text search
         if (search && search.trim() !== '') {
-            const searchRegex = { $regex: search.trim(), $options: 'i' };
-            filter.$or = [
-                { title: searchRegex },
-                { description: searchRegex },
-            ];
+            filter.$text = { $search: search.trim() };
         }
 
         const items = await Item.find(filter)
@@ -131,5 +129,45 @@ const updateItem = async (req, res) => {
     }
 };
 
-module.exports = { createItem, getItems, requestItem, updateItem };
+// @desc    Delete an item and its associated requests
+// @route   DELETE /api/items/:id
+// @access  Private (Owner only)
+const deleteItem = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const item = await Item.findById(req.params.id).session(session);
+
+        if (!item) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        const ownerIdString = item.ownerId._id ? item.ownerId._id.toString() : item.ownerId.toString();
+        if (ownerIdString !== req.user._id.toString()) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(401).json({ message: 'Not authorized to delete this item' });
+        }
+
+        // Delete all associated requests
+        await BorrowRequest.deleteMany({ itemId: item._id }).session(session);
+        
+        // Delete the item
+        await item.deleteOne({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({ message: 'Item removed' });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error(error);
+        res.status(500).json({ message: 'Server Error deleting item', error: error.message });
+    }
+};
+
+module.exports = { createItem, getItems, requestItem, updateItem, deleteItem };
 

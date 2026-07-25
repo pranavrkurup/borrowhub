@@ -1,5 +1,6 @@
 const BorrowRequest = require('../models/BorrowRequest');
 const Item = require('../models/Item');
+const mongoose = require('mongoose');
 
 // @desc    Create a new borrow request (with date-overlap validation)
 // @route   POST /api/requests
@@ -14,6 +15,19 @@ const createRequest = async (req, res) => {
         // 2. Prevent the owner from borrowing their own item!
         if (item.ownerId.toString() === req.user._id.toString()) {
             return res.status(400).json({ message: 'You cannot borrow your own item' });
+        }
+
+        // Date Validation
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Ignore time/timezone shifts
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (start < today) {
+            return res.status(400).json({ message: 'Start date cannot be in the past' });
+        }
+        if (end <= start) {
+            return res.status(400).json({ message: 'End date must be strictly after the start date' });
         }
 
         // 3. Date-overlap validation against active bookings
@@ -90,22 +104,46 @@ const getMyRequests = async (req, res) => {
 // @desc    Approve or Reject a request
 // @route   PUT /api/requests/:id
 const updateRequestStatus = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
-        const { status } = req.body; // Expecting 'Approved' or 'Rejected'
-        const request = await BorrowRequest.findById(req.params.id);
+        const { status } = req.body; // Expecting 'Approved' or 'Rejected' (or 'Returned')
+        const request = await BorrowRequest.findById(req.params.id).session(session);
 
-        if (!request) return res.status(404).json({ message: 'Request not found' });
+        if (!request) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: 'Request not found' });
+        }
 
         // Security check: Only the LENDER (owner) can approve or reject!
         if (request.lenderId.toString() !== req.user._id.toString()) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(403).json({ message: 'Only the item owner can update this request' });
         }
 
         request.status = status;
-        await request.save();
+        await request.save({ session });
+
+        // Synchronize Item status
+        const item = await Item.findById(request.itemId).session(session);
+        if (item) {
+            if (status === 'Approved') {
+                item.status = 'Borrowed';
+            } else if (status === 'Rejected' || status === 'Returned') {
+                item.status = 'Available';
+            }
+            await item.save({ session });
+        }
+
+        await session.commitTransaction();
+        session.endSession();
 
         res.json(request);
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).json({ message: 'Server Error updating request' });
     }
 };

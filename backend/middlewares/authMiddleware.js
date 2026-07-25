@@ -16,6 +16,10 @@ const protect = async (req, res, next) => {
             // 4. Find the user in the database, but DO NOT fetch the password
             req.user = await User.findById(decoded.id).select('-password');
 
+            if (!req.user) {
+                return res.status(401).json({ message: 'User belonging to this token no longer exists' });
+            }
+
             // 5. Let the user through to the controller
             next();
         } catch (error) {

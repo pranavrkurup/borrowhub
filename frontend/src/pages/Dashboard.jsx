@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import EditItemModal from '../components/EditItemModal';
@@ -56,7 +56,7 @@ const Dashboard = () => {
         if (!currentUserId) return;
 
         // Fetch all items from the public endpoint (no /my route exists on backend)
-        const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items');
+        const res = await api.get('/api/items');
 
         // Filter to only items owned by the current user
         const myOwnedItems = (res.data || []).filter((item) => {
@@ -87,7 +87,7 @@ const Dashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         };
 
-        const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/requests', config);
+        const res = await api.get('/api/requests', config);
         if (res.data && Array.isArray(res.data)) {
           const allRequests = res.data;
           const incoming = allRequests.filter((req) => {
@@ -123,7 +123,7 @@ const Dashboard = () => {
       };
 
       const statusToSend = actionType === 'Denied' ? 'Rejected' : actionType;
-      await axios.put(`https://borrowhub-backend-9hji.onrender.com/api/requests/${requestId}`, { status: statusToSend }, config);
+      await api.put(`/api/requests/${requestId}`, { status: statusToSend }, config);
 
       setIncomingRequests((prev) =>
         prev.map((r) =>
@@ -174,7 +174,7 @@ const Dashboard = () => {
         const config = {
           headers: { Authorization: `Bearer ${token}` },
         };
-        await axios.delete(`https://borrowhub-backend-9hji.onrender.com/api/items/${itemId}`, config);
+        await api.delete(`/api/items/${itemId}`, config);
       }
 
       setMyItems((prev) => prev.filter((item) => item._id !== itemId));

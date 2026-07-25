@@ -9,6 +9,8 @@
   --color-lime-hover: #aade49;
   --color-off-white: #F4F6F0;
   --color-white: #FFFFFF;
+  --color-green-light: #C0EB6A;
+  --color-butter: #485550;
 
   --bg-app: #F4F6F0;
   --bg-gradient: none;
@@ -49,6 +51,8 @@
 }
 
 [data-theme="green"] {
+  --color-green-light: #C0EB6A;
+  --color-butter: #485550;
   --bg-app: #364039;
   --bg-gradient: none;
   --bg-panel: rgba(255, 255, 255, 0.08);

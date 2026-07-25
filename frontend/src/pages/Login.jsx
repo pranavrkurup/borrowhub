@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -18,7 +18,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://borrowhub-backend-9hji.onrender.com/api/users/login', {
+      const response = await api.post('/api/users/login', {
         email,
         password,
       });

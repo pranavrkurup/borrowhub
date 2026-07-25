@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import BorrowModal from '../components/BorrowModal';
 import ItemCard from '../components/ItemCard';
@@ -34,7 +34,7 @@ const Feed = () => {
         params.category = category;
       }
 
-      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/items', { params });
+      const res = await api.get('/api/items', { params });
       setItems(res.data);
       setLoading(false);
     } catch (err) {

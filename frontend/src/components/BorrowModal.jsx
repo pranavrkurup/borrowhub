@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 const BorrowModal = ({ item, onClose, onSuccess }) => {
@@ -15,9 +15,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
   useEffect(() => {
     const fetchBookedDates = async () => {
       try {
-        const { data } = await axios.get(
-          `https://borrowhub-backend-9hji.onrender.com/api/items/${item._id}/booked-dates`
-        );
+        const { data } = await api.get(`/api/items/${item._id}/booked-dates`);
         setBookedDates(data);
       } catch (err) {
         console.error('Failed to fetch booked dates:', err);
@@ -65,24 +63,13 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      };
-
-      await axios.post(
-        'https://borrowhub-backend-9hji.onrender.com/api/requests',
-        {
-          itemId: item._id,
-          lenderId: item.ownerId?._id || item.ownerId,
-          startDate,
-          endDate,
-          message,
-        },
-        config
-      );
+      await api.post('/api/requests', {
+        itemId: item._id,
+        lenderId: item.ownerId?._id || item.ownerId,
+        startDate,
+        endDate,
+        message,
+      });
 
       setError(null);
       setLoading(false);

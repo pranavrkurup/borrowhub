@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -55,7 +55,7 @@ const BorrowRequests = () => {
         },
       };
 
-      const res = await axios.get('https://borrowhub-backend-9hji.onrender.com/api/requests', config);
+      const res = await api.get('/api/requests', config);
       setRequests(res.data);
       setLoading(false);
     } catch (err) {
@@ -78,7 +78,7 @@ const BorrowRequests = () => {
         },
       };
 
-      await axios.put(`https://borrowhub-backend-9hji.onrender.com/api/requests/${requestId}`, { status: newStatus }, config);
+      await api.put(`/api/requests/${requestId}`, { status: newStatus }, config);
 
       setRequests((prev) =>
         prev.map((req) => (req._id === requestId ? { ...req, status: newStatus } : req))

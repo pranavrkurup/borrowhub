@@ -1,7 +1,7 @@
  const express = require('express');
 const router = express.Router();
 
-const { createItem, getItems, requestItem, updateItem } = require('../controllers/itemController');
+const { createItem, getItems, requestItem, updateItem, deleteItem } = require('../controllers/itemController');
 const { getBookedDates } = require('../controllers/borrowController');
 const { protect } = require('../middlewares/authMiddleware');
 const upload = require('../config/cloudinary');
@@ -21,5 +21,8 @@ router.put('/:id', protect, updateItem);
 // PUT/PATCH /api/items/:id/request -> Must be logged in to request an item
 router.put('/:id/request', protect, requestItem);
 router.patch('/:id/request', protect, requestItem);
+
+// DELETE /api/items/:id -> Must be logged in and owner to delete an item
+router.delete('/:id', protect, deleteItem);
 
 module.exports = router;
