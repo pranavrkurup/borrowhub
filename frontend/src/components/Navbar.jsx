@@ -17,13 +17,30 @@ const Navbar = () => {
     <header className="glass-navbar border-b border-border">
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
         {/* Logo Left */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg group-hover:bg-accent transition-colors">
-            <Package size={20} strokeWidth={2.5} />
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="relative flex items-center justify-center w-8 h-8">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 4H14C16.2091 4 18 5.79086 18 8C18 10.2091 16.2091 12 14 12H6" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 12H15C17.2091 12 19 13.7909 19 16C19 18.2091 17.2091 20 15 20H6" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              
+              <line x1="6" y1="4" x2="6" y2="20" stroke="#84cc16" strokeWidth="2" strokeLinecap="round"/>
+              
+              <circle cx="6" cy="4" r="2" fill="#84cc16" className="drop-shadow-[0_0_3px_rgba(132,204,22,0.8)]" />
+              <circle cx="6" cy="12" r="2" fill="#84cc16" className="drop-shadow-[0_0_3px_rgba(132,204,22,0.8)]" />
+              <circle cx="6" cy="20" r="2" fill="#84cc16" className="drop-shadow-[0_0_3px_rgba(132,204,22,0.8)]" />
+            </svg>
           </div>
-          <span className="text-xl font-bold tracking-tight text-primary">
-            BorrowHub
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[17px] font-semibold text-foreground tracking-wide">
+              BorrowHub
+            </span>
+            <span className="text-[17px] text-muted-foreground font-light">
+              |
+            </span>
+            <span className="text-[15px] text-muted-foreground font-medium">
+              Campus Inventory
+            </span>
+          </div>
         </Link>
 
         {/* Links Right */}
