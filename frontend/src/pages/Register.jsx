@@ -43,7 +43,7 @@ const Register = () => {
         
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <div className="badge badge-butter" style={{ marginBottom: '12px' }}>
-            ✨ Join Campus Network
+            Join Campus Network
           </div>
           <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-main)' }}>Create an Account</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '6px' }}>
@@ -53,7 +53,7 @@ const Register = () => {
         
         {error && (
           <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '14px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px', textAlign: 'center' }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
         
@@ -106,7 +106,7 @@ const Register = () => {
             className="glass-button btn-primary" 
             style={{ width: '100%', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}
           >
-            {loading ? 'Creating Account...' : 'Sign Up 🚀'}
+            {loading ? 'Creating Account...' : 'Sign Up '}
           </button>
         </form>
 

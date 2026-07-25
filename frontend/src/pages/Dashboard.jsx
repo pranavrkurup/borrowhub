@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { Building2, Package, Inbox, FolderOpen, Box, Plus, Edit2, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 import EditItemModal from '../components/EditItemModal';
 
 const Dashboard = () => {
@@ -132,10 +133,10 @@ const Dashboard = () => {
             : r
         )
       );
-      showSuccess(`✅ Request ${actionType.toLowerCase()} successfully!`);
+      showSuccess(`Request ${actionType.toLowerCase()} successfully!`);
     } catch (err) {
       console.error('Failed to update request status:', err);
-      showSuccess('❌ Failed to update request status.');
+      showSuccess('Failed to update request status.');
     }
   };
 
@@ -157,7 +158,7 @@ const Dashboard = () => {
   const handleSaveProfile = () => {
     setProfileData({ ...editProfileData });
     setIsEditingProfile(false);
-    showSuccess('✅ Profile updated successfully!');
+    showSuccess('Profile updated successfully!');
   };
 
   // Inventory handlers
@@ -178,12 +179,12 @@ const Dashboard = () => {
       }
 
       setMyItems((prev) => prev.filter((item) => item._id !== itemId));
-      showSuccess('🗑️ Item deleted successfully.');
+      showSuccess('Item deleted successfully.');
     } catch (err) {
       console.error('Delete failed:', err);
       // Still remove from UI for mock items
       setMyItems((prev) => prev.filter((item) => item._id !== itemId));
-      showSuccess('🗑️ Item removed from inventory.');
+      showSuccess('Item removed from inventory.');
     }
   };
 
@@ -192,7 +193,7 @@ const Dashboard = () => {
       prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
     );
     setEditingItem(null);
-    showSuccess('✏️ Item updated successfully!');
+    showSuccess('Item updated successfully!');
   };
 
   const handleAddItem = (e) => {
@@ -216,7 +217,7 @@ const Dashboard = () => {
     setMyItems((prevItems) => [newItem, ...prevItems]);
     setIsAddingItem(false);
     e.target.reset();
-    showSuccess('🎉 Item added successfully!');
+    showSuccess('Item added successfully!');
   };
 
   const showSuccess = (message) => {
@@ -295,9 +296,9 @@ const Dashboard = () => {
               background: 'rgba(255, 255, 255, 0.65)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255, 255, 255, 0.7)',
-              borderRadius: '20px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              borderRadius: '12px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid rgba(226, 232, 240, 0.8)',
               padding: '32px 28px',
             }}
           >
@@ -310,12 +311,12 @@ const Dashboard = () => {
                     width: '96px',
                     height: '96px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #C0EB6A, #013E37)',
+                    background: '#059669',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 20px',
-                    boxShadow: '0 6px 24px rgba(192, 235, 106, 0.35)',
+                    boxShadow: 'none',
                   }}
                 >
                   <span
@@ -355,7 +356,7 @@ const Dashboard = () => {
                     gap: '6px',
                   }}
                 >
-                  🎓 {profileData.university}
+                  <Building2 size={16} className="mr-1" /> {profileData.university}
                 </p>
 
                 {/* Divider */}
@@ -387,222 +388,7 @@ const Dashboard = () => {
                   onClick={handleEditProfile}
                   className="w-full"
                   style={{
-                    padding: '12px 24px',
-                    borderRadius: '14px',
-                    border: '2px solid #485550',
-                    background: 'transparent',
-                    color: '#485550',
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#485550';
-                    e.currentTarget.style.color = '#F4F6F0';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = '#485550';
-                  }}
-                >
-                  ✏️ Edit Profile
-                </button>
-
-                {/* Stats row */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    marginTop: '24px',
-                    paddingTop: '20px',
-                    borderTop: '1px solid rgba(72, 85, 80, 0.12)',
-                  }}
-                >
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#485550' }}>
-                      {myItems.length}
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#7a8a82', fontWeight: 500 }}>
-                      Items Listed
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#C0EB6A' }}>
-                      {myItems.filter((i) => i.status === 'Available').length}
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#7a8a82', fontWeight: 500 }}>
-                      Available
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#013E37' }}>
-                      {myItems.filter((i) => i.status === 'Borrowed' || i.status === 'Requested').length}
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#7a8a82', fontWeight: 500 }}>
-                      In Use
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* ---- EDIT MODE ---- */
-              <div>
-                <h3
-                  style={{
-                    fontSize: '1.2rem',
-                    fontWeight: 700,
-                    color: '#485550',
-                    marginBottom: '20px',
-                  }}
-                >
-                  ✏️ Edit Profile
-                </h3>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Name Input */}
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.85rem',
-                        fontWeight: 700,
-                        color: '#485550',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      value={editProfileData.name}
-                      onChange={(e) =>
-                        setEditProfileData((prev) => ({ ...prev, name: e.target.value }))
-                      }
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '12px',
-                        border: '1.5px solid rgba(72, 85, 80, 0.25)',
-                        background: 'rgba(255,255,255,0.7)',
-                        color: '#485550',
-                        fontSize: '0.95rem',
-                        fontWeight: 500,
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                  </div>
-
-                  {/* University Input */}
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.85rem',
-                        fontWeight: 700,
-                        color: '#485550',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      University
-                    </label>
-                    <input
-                      type="text"
-                      value={editProfileData.university}
-                      onChange={(e) =>
-                        setEditProfileData((prev) => ({ ...prev, university: e.target.value }))
-                      }
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '12px',
-                        border: '1.5px solid rgba(72, 85, 80, 0.25)',
-                        background: 'rgba(255,255,255,0.7)',
-                        color: '#485550',
-                        fontSize: '0.95rem',
-                        fontWeight: 500,
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                  </div>
-
-                  {/* Bio Input */}
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.85rem',
-                        fontWeight: 700,
-                        color: '#485550',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      Bio
-                    </label>
-                    <textarea
-                      rows="4"
-                      value={editProfileData.bio}
-                      onChange={(e) =>
-                        setEditProfileData((prev) => ({ ...prev, bio: e.target.value }))
-                      }
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '12px',
-                        border: '1.5px solid rgba(72, 85, 80, 0.25)',
-                        background: 'rgba(255,255,255,0.7)',
-                        color: '#485550',
-                        fontSize: '0.95rem',
-                        fontWeight: 500,
-                        outline: 'none',
-                        resize: 'vertical',
-                        boxSizing: 'border-box',
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Edit Actions */}
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '10px',
-                    marginTop: '20px',
-                  }}
-                >
-                  <button
-                    onClick={handleCancelEdit}
-                    style={{
-                      flex: 1,
-                      padding: '11px',
-                      borderRadius: '12px',
-                      border: '2px solid rgba(72, 85, 80, 0.3)',
-                      background: 'transparent',
-                      color: '#485550',
-                      fontWeight: 700,
-                      fontSize: '0.9rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveProfile}
-                    style={{
-                      flex: 1,
-                      padding: '11px',
-                      borderRadius: '12px',
-                      border: 'none',
-                      background: '#C0EB6A',
-                      color: '#485550',
-                      fontWeight: 700,
-                      fontSize: '0.9rem',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
-                      transition: 'all 0.2s ease',
+                    padding: '8px 16px', borderRadius: '6px', background: '#059669', color: '#FFFFFF', fontWeight: 600, fontSize: '0.9rem', border: 'none', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'all 0.2s ease',
                     }}
                   >
                     Save Changes
@@ -629,7 +415,7 @@ const Dashboard = () => {
               }`}
               style={{ background: 'none', border: activeTab === 'inventory' ? undefined : 'none', borderBottom: activeTab === 'inventory' ? '4px solid #C0EB6A' : 'none' }}
             >
-              📦 My Inventory
+              <Box size={16} className="inline mr-2" /> My Inventory
             </button>
             <button
               onClick={() => setActiveTab('incoming')}
@@ -640,7 +426,7 @@ const Dashboard = () => {
               }`}
               style={{ background: 'none', border: activeTab === 'incoming' ? undefined : 'none', borderBottom: activeTab === 'incoming' ? '4px solid #C0EB6A' : 'none' }}
             >
-              📥 Incoming Requests
+              <Inbox size={16} className="inline mr-2" /> Incoming Requests
             </button>
             <button
               onClick={() => setActiveTab('outgoing')}
@@ -651,7 +437,7 @@ const Dashboard = () => {
               }`}
               style={{ background: 'none', border: activeTab === 'outgoing' ? undefined : 'none', borderBottom: activeTab === 'outgoing' ? '4px solid #C0EB6A' : 'none' }}
             >
-              📤 My Requests
+              <Package size={16} className="inline mr-2" /> My Requests
             </button>
           </div>
 
@@ -683,19 +469,10 @@ const Dashboard = () => {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    padding: '12px 24px',
-                    borderRadius: '14px',
-                    background: '#C0EB6A',
-                    color: '#485550',
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
-                    transition: 'all 0.2s ease',
+                    padding: '8px 16px', borderRadius: '6px', background: '#059669', color: '#FFFFFF', fontWeight: 600, fontSize: '0.9rem', border: 'none', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'all 0.2s ease',
                   }}
                 >
-                  + Add New Item
+                  <Plus size={16} className="mr-1" /> Add Item
                 </button>
               </div>
 
@@ -706,42 +483,30 @@ const Dashboard = () => {
                     background: 'rgba(255, 255, 255, 0.65)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255, 255, 255, 0.7)',
-                    borderRadius: '20px',
+                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                    borderRadius: '12px',
                     padding: '60px 24px',
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
-                  <h3
-                    style={{
-                      fontSize: '1.4rem',
-                      fontWeight: 700,
-                      color: '#485550',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    No items in your inventory
+                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 mx-auto mb-4">
+                    <Package className="text-slate-600" strokeWidth={1.5} size={20} />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">
+                    No active inventory listed.
                   </h3>
-                  <p style={{ color: '#7a8a82', marginBottom: '24px', lineHeight: 1.5 }}>
-                    Start sharing with your campus community by listing your first item!
+                  <p className="text-slate-500 mb-6 text-sm">
+                    Deploy your first campus resource to start tracking sharing metrics.
                   </p>
                   <button
                     type="button"
                     onClick={() => setIsAddingItem(true)}
                     style={{
                       display: 'inline-block',
-                      padding: '12px 28px',
-                      borderRadius: '14px',
-                      background: '#C0EB6A',
-                      color: '#485550',
-                      fontWeight: 700,
-                      border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(192, 235, 106, 0.4)',
+                      padding: '8px 16px', borderRadius: '6px', background: '#059669', color: '#FFFFFF', fontWeight: 600, fontSize: '0.9rem', border: 'none', cursor: 'pointer', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'all 0.2s ease',
                     }}
                   >
-                    + List Your First Item
+                    <Plus size={16} className="mr-1" /> List Item
                   </button>
                 </div>
               ) : (
@@ -755,9 +520,9 @@ const Dashboard = () => {
                           background: 'rgba(255, 255, 255, 0.65)',
                           backdropFilter: 'blur(16px)',
                           WebkitBackdropFilter: 'blur(16px)',
-                          border: '1px solid rgba(255, 255, 255, 0.7)',
-                          borderRadius: '20px',
-                          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                          border: '1px solid rgba(226, 232, 240, 0.8)',
+                          borderRadius: '12px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid rgba(226, 232, 240, 0.8)',
                           overflow: 'hidden',
                           display: 'flex',
                           flexDirection: 'column',
@@ -802,7 +567,7 @@ const Dashboard = () => {
                               backdropFilter: 'blur(8px)',
                             }}
                           >
-                            ● {item.status || 'Available'}
+                            {item.status || 'Available'}
                           </span>
                         </div>
 
@@ -904,7 +669,7 @@ const Dashboard = () => {
                                 e.currentTarget.style.borderColor = 'rgba(72, 85, 80, 0.25)';
                               }}
                             >
-                              ✏️ Edit
+                              Edit
                             </button>
                             <button
                               onClick={() => handleDeleteItem(item._id)}
@@ -929,7 +694,7 @@ const Dashboard = () => {
                                 e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.35)';
                               }}
                             >
-                              🗑️ Delete
+                              Delete
                             </button>
                           </div>
                         </div>
@@ -982,13 +747,13 @@ const Dashboard = () => {
                     background: 'rgba(255, 255, 255, 0.65)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255, 255, 255, 0.7)',
-                    borderRadius: '20px',
+                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                    borderRadius: '12px',
                     padding: '60px 24px',
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}></div>
                   <h3
                     style={{
                       fontSize: '1.4rem',
@@ -1012,9 +777,9 @@ const Dashboard = () => {
                         background: 'rgba(255, 255, 255, 0.65)',
                         backdropFilter: 'blur(16px)',
                         WebkitBackdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.7)',
-                        borderRadius: '20px',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                        border: '1px solid rgba(226, 232, 240, 0.8)',
+                        borderRadius: '12px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid rgba(226, 232, 240, 0.8)',
                         padding: '24px',
                         display: 'flex',
                         alignItems: 'center',
@@ -1158,13 +923,13 @@ const Dashboard = () => {
                     background: 'rgba(255, 255, 255, 0.65)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255, 255, 255, 0.7)',
-                    borderRadius: '20px',
+                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                    borderRadius: '12px',
                     padding: '60px 24px',
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '14px' }}></div>
                   <h3
                     style={{
                       fontSize: '1.4rem',
@@ -1190,9 +955,9 @@ const Dashboard = () => {
                           background: 'rgba(255, 255, 255, 0.65)',
                           backdropFilter: 'blur(16px)',
                           WebkitBackdropFilter: 'blur(16px)',
-                          border: '1px solid rgba(255, 255, 255, 0.7)',
-                          borderRadius: '20px',
-                          boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                          border: '1px solid rgba(226, 232, 240, 0.8)',
+                          borderRadius: '12px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid rgba(226, 232, 240, 0.8)',
                           padding: '24px',
                           display: 'flex',
                           alignItems: 'center',
@@ -1263,7 +1028,7 @@ const Dashboard = () => {
                             ? '✓ Approved'
                             : req.status === 'Rejected' || req.status === 'Denied'
                             ? '✕ Denied'
-                            : '● Pending'}
+                            : 'Pending'}
                         </span>
                       </div>
                     );

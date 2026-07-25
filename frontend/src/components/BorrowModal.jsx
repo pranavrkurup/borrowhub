@@ -129,7 +129,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
         </button>
 
         <div className="badge badge-butter" style={{ marginBottom: '10px' }}>
-          🤝 Peer Lending Request
+          Peer Lending Request
         </div>
         <h3 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-main)' }}>
           Request to Borrow
@@ -148,7 +148,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
             fontSize: '0.9rem',
             marginBottom: '18px'
           }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
@@ -214,7 +214,7 @@ const BorrowModal = ({ item, onClose, onSuccess }) => {
               className="glass-button btn-primary"
               style={{ flex: 1.5 }}
             >
-              {loading ? 'Sending Request...' : 'Send Request 🚀'}
+              {loading ? 'Sending Request...' : 'Send Request '}
             </button>
           </div>
         </form>

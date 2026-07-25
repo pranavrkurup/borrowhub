@@ -114,7 +114,7 @@ const BorrowRequests = () => {
       {/* Header */}
       <div style={{ marginBottom: '36px' }}>
         <div className="badge badge-butter" style={{ marginBottom: '12px' }}>
-          📊 Student Management Portal
+          Student Management Portal
         </div>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
           Lending & Borrowing Dashboard
@@ -126,7 +126,7 @@ const BorrowRequests = () => {
 
       {error && (
         <div className="glass-panel" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '16px', borderRadius: '12px', marginBottom: '24px' }}>
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
@@ -147,7 +147,7 @@ const BorrowRequests = () => {
             boxShadow: activeTab === 'incoming' ? 'var(--shadow-glow)' : 'none'
           }}
         >
-          📥 Incoming Requests ({incomingRequests.length})
+          Incoming Requests ({incomingRequests.length})
         </button>
 
         <button
@@ -165,18 +165,18 @@ const BorrowRequests = () => {
             boxShadow: activeTab === 'myRequests' ? 'var(--shadow-glow)' : 'none'
           }}
         >
-          📤 My Borrow Requests ({myRequests.length})
+          My Borrow Requests ({myRequests.length})
         </button>
       </div>
 
       {/* Content */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
-          ⏳ Loading dashboard records...
+          Loading dashboard records...
         </div>
       ) : displayedRequests.length === 0 ? (
         <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '500px', margin: '40px auto' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📭</div>
+          <div style={{ fontSize: '3rem', marginBottom: '14px' }}></div>
           <h3 style={{ fontSize: '1.5rem', marginBottom: '10px', color: 'var(--text-main)' }}>No records found</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.5 }}>
             {activeTab === 'incoming'
@@ -219,7 +219,7 @@ const BorrowRequests = () => {
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <span className={`badge ${getStatusBadge(req.status)}`} style={{ marginBottom: '4px' }}>
-                        ● {req.status}
+                        {req.status}
                       </span>
                       <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {item.title || 'Deleted Item'}
@@ -291,10 +291,10 @@ const BorrowRequests = () => {
                 {activeTab === 'myRequests' && (
                   <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '14px', textAlign: 'center' }}>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                      {req.status === 'Pending' && '⏳ Waiting for owner approval...'}
-                      {req.status === 'Approved' && '🎉 Approved! Coordinate with the owner for pickup.'}
-                      {req.status === 'Rejected' && '❌ Request declined by owner.'}
-                      {req.status === 'Returned' && '📦 Item returned. Thank you for sharing!'}
+                      {req.status === 'Pending' && 'Waiting for owner approval...'}
+                      {req.status === 'Approved' && 'Approved! Coordinate with the owner for pickup.'}
+                      {req.status === 'Rejected' && 'Request declined by owner.'}
+                      {req.status === 'Returned' && 'Item returned. Thank you for sharing!'}
                     </span>
                   </div>
                 )}

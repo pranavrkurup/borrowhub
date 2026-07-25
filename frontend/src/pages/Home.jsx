@@ -87,12 +87,12 @@ const Home = () => {
       {/* ─── Value Props Row (Full Width) ─── */}
       <div className="w-full max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 py-12 px-6 border-t border-gray-100">
         <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl">🎓</span>
+          <span className="text-3xl"></span>
           <h3 className="font-bold text-[#485550] text-sm">Verified Students</h3>
           <p className="text-xs text-gray-500">Every user is a verified college student on your campus.</p>
         </div>
         <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl">🤝</span>
+          <span className="text-3xl"></span>
           <h3 className="font-bold text-[#485550] text-sm">Easy & Safe</h3>
           <p className="text-xs text-gray-500">Simple request flow with built-in accountability tracking.</p>
         </div>

@@ -25,21 +25,21 @@ const getStatusConfig = (status) => {
   switch (status) {
     case 'Available':
       return {
-        label: '● Available',
+        label: 'Available',
         bgColor: 'var(--status-available-bg)',
         borderColor: 'var(--status-available-border)',
         color: 'var(--status-available-text)'
       };
     case 'Requested':
       return {
-        label: '⏳ Requested',
+        label: 'Requested',
         bgColor: 'var(--status-requested-bg)',
         borderColor: 'var(--status-requested-border)',
         color: 'var(--status-requested-text)'
       };
     case 'Borrowed':
       return {
-        label: '🔒 Borrowed',
+        label: 'Borrowed',
         bgColor: 'var(--status-borrowed-bg)',
         borderColor: 'var(--status-borrowed-border)',
         color: 'var(--status-borrowed-text)'
@@ -177,7 +177,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
           marginBottom: '16px'
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            👤 <strong style={{ color: 'var(--text-main)' }}>{displayItem.ownerId?.name || 'Campus Student'}</strong>
+            <strong style={{ color: 'var(--text-main)' }}>{displayItem.ownerId?.name || 'Campus Student'}</strong>
           </span>
           <span style={{ color: statusConfig.color, fontWeight: 600 }}>
             {displayItem.status || 'Available'}
@@ -200,7 +200,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             gap: '12px'
           }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              ✨ You own this item
+              You own this item
             </span>
             <button
               type="button"
@@ -229,7 +229,7 @@ const ItemCard = ({ item, user, onStatusChange }) => {
             className="bg-[#C0EB6A] text-[#485550] font-bold shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 rounded-xl"
             style={{ width: '100%', padding: '14px' }}
           >
-            {loading ? '⏳ Requesting...' : '📦 Request to Borrow'}
+            {loading ? 'Requesting...' : 'Request to Borrow'}
           </button>
         )}
       </div>

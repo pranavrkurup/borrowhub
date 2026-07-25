@@ -46,7 +46,7 @@ const Feed = () => {
 
   const handleBorrowSuccess = () => {
     setSelectedItemForBorrow(null);
-    setSuccessMessage('🎉 Borrow request submitted successfully! The owner has been notified on their dashboard.');
+    setSuccessMessage('Borrow request submitted successfully! The owner has been notified on their dashboard.');
     setTimeout(() => setSuccessMessage(null), 6000);
   };
 
@@ -54,7 +54,7 @@ const Feed = () => {
     setItems((prev) =>
       prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
     );
-    setSuccessMessage('🎉 Item status updated to Requested successfully!');
+    setSuccessMessage('Item status updated to Requested successfully!');
     setTimeout(() => setSuccessMessage(null), 6000);
   };
 
@@ -194,7 +194,7 @@ const Feed = () => {
         </div>
       ) : items.length === 0 ? (
         <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '520px', margin: '30px auto' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '14px' }}>📦</div>
+          <div style={{ fontSize: '3rem', marginBottom: '14px' }}></div>
           <h3 style={{ fontSize: '1.6rem', marginBottom: '10px', color: 'var(--text-main)' }}>No items found</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '26px', lineHeight: 1.5 }}>
             {searchQuery || selectedCategory !== 'All' 

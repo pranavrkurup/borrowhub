@@ -51,7 +51,7 @@ const Login = () => {
 
         {error && (
           <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '14px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px', textAlign: 'center' }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
@@ -90,7 +90,7 @@ const Login = () => {
             className="glass-button btn-primary" 
             style={{ width: '100%', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}
           >
-            {loading ? 'Signing In...' : 'Sign In 🚀'}
+            {loading ? 'Signing In...' : 'Sign In '}
           </button>
         </form>
 

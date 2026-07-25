@@ -66,7 +66,7 @@ const AddItem = () => {
       setLoading(false);
       navigate('/');
     } catch (err) {
-      console.error('❌ Item creation failed:', err.response?.status, err.response?.data || err.message);
+      console.error('Item creation failed:', err.response?.status, err.response?.data || err.message);
       setLoading(false);
       setError(err.response?.data?.message || 'Failed to list item. Ensure backend is running and image upload is working.');
     }
@@ -76,7 +76,7 @@ const AddItem = () => {
     return (
       <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
         <div className="glass-panel" style={{ maxWidth: '480px', margin: '0 auto', padding: '40px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
+          <div style={{ fontSize: '3rem', marginBottom: '16px' }}></div>
           <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--text-main)' }}>Access Denied</h3>
           <p style={{ color: 'var(--text-secondary)', margin: '0 0 24px', lineHeight: 1.5 }}>
             You must be signed in with your college student account to list equipment or books for lending.
@@ -95,7 +95,7 @@ const AddItem = () => {
         
         <div style={{ textAlign: 'center', marginBottom: '34px' }}>
           <div className="badge badge-butter" style={{ marginBottom: '14px' }}>
-            📦 Campus Inventory Listing
+            Campus Inventory Listing
           </div>
           <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
             List Equipment for Sharing
@@ -107,7 +107,7 @@ const AddItem = () => {
 
         {error && (
           <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '16px', borderRadius: '12px', marginBottom: '24px', fontSize: '0.9rem' }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
@@ -232,7 +232,7 @@ const AddItem = () => {
             className="glass-button btn-primary"
             style={{ width: '100%', padding: '16px', fontSize: '1.05rem', marginTop: '14px' }}
           >
-            {loading ? '📤 Uploading to Cloudinary & Listing...' : '🚀 Publish Item Listing'}
+            {loading ? 'Uploading to Cloudinary & Listing...' : 'Publish Item Listing'}
           </button>
 
         </form>
