@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar';
 import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
