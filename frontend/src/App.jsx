@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import Login from './pages/Login';
@@ -13,9 +14,10 @@ import BorrowRequests from './pages/BorrowRequests';
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-[#F4F6F0] text-[#485550]">
+      <div className="min-h-screen flex flex-col bg-background text-foreground font-sans selection:bg-accent selection:text-white">
         <Navbar />
-        <main style={{ flex: 1 }}>
+        <CommandPalette />
+        <main className="flex-1 flex flex-col w-full max-w-7xl mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/feed" element={<Feed />} />

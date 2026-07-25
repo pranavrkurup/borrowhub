@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Button } from './ui/button';
+import { Package, LayoutDashboard, LogOut, Search } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -12,56 +14,60 @@ const Navbar = () => {
   };
 
   return (
-    <header className="glass-navbar w-full">
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <header className="glass-navbar border-b border-border">
+      <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
         {/* Logo Left */}
-        <Link to="/" className="flex items-center gap-3 no-underline">
-          <img src="/logo.png" alt="BorrowHub Logo" className="h-10 w-10 object-contain drop-shadow-sm" />
-          <span className="text-2xl font-extrabold tracking-tight text-[#485550]">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg group-hover:bg-accent transition-colors">
+            <Package size={20} strokeWidth={2.5} />
+          </div>
+          <span className="text-xl font-bold tracking-tight text-primary">
             BorrowHub
           </span>
         </Link>
 
         {/* Links Right */}
-        <div className="flex items-center gap-6 font-semibold text-[#013E37] text-base">
-          <Link to="/feed" className="hover:opacity-80 transition-opacity">
-            Feed
-          </Link>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" className="hidden sm:flex text-muted-foreground gap-2" onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', {'key': 'k', 'metaKey': true}))}>
+            <Search size={16} />
+            <span className="text-sm">Search</span>
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ml-2">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </Button>
+          
+          <Button variant="ghost" asChild>
+            <Link to="/feed">Feed</Link>
+          </Button>
 
           {user ? (
             <>
-              <Link to="/add-item" className="hover:opacity-80 transition-opacity">
-                + List Item
-              </Link>
+              <Button variant="ghost" asChild className="hidden md:flex">
+                <Link to="/add-item">List Item</Link>
+              </Button>
 
-              <Link to="/dashboard" className="hover:opacity-80 transition-opacity">
-                Dashboard
-              </Link>
+              <div className="h-4 w-px bg-border mx-2 hidden sm:block"></div>
 
-              <div className="flex items-center gap-3 ml-2 border-l-2 border-[#013E37]/20 pl-4">
-                <span className="font-extrabold text-[#013E37]">
-                  Hi, {user?.name || user?.username || 'User'}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-[#013E37] text-[#FFEFB3] px-5 py-2 rounded-full font-bold hover:bg-[#02594F] transition-colors shadow-sm"
-                >
-                  Logout
-                </button>
-              </div>
+              <Button variant="ghost" asChild className="gap-2">
+                <Link to="/dashboard">
+                  <LayoutDashboard size={16} />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+              </Button>
+              
+              <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2">
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:opacity-80 transition-opacity">
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="px-6 py-2.5 rounded-full bg-[#C0EB6A] text-[#485550] font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all"
-              >
-                Join as Student
-              </Link>
+              <Button variant="ghost" asChild>
+                <Link to="/login">Sign In</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/register">Get Started</Link>
+              </Button>
             </>
           )}
         </div>

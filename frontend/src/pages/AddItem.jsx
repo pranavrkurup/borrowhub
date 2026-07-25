@@ -2,241 +2,186 @@ import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-
-const CATEGORIES = ['Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
-const CONDITIONS = ['Like New', 'Good', 'Fair'];
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card } from '../components/ui/card';
+import { UploadCloud, Image as ImageIcon } from 'lucide-react';
 
 const AddItem = () => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'Electronics',
+    condition: 'Good',
+  });
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Electronics');
-  const [condition, setCondition] = useState('Like New');
-  const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    if (!file) {
+      setError('Please provide an image of the item.');
+      return;
+    }
+    setLoading(true);
     setError(null);
 
-    const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
-    const token = user?.token || storedUser?.token;
-
-    if (!token) {
-      setError('You must be logged in to list an item.');
-      return;
-    }
-
-    if (!imageFile) {
-      setError('Please select an image file to upload.');
-      return;
-    }
-
-    setLoading(true);
-
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('category', category);
-      formData.append('condition', condition);
-      formData.append('description', description);
-      formData.append('image', imageFile);
+      const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      const token = user?.token || storedUser?.token;
+      if (!token) throw new Error('Not authenticated');
 
-      const config = {
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('description', formData.description);
+      data.append('category', formData.category);
+      data.append('condition', formData.condition);
+      data.append('image', file);
+
+      await api.post('/api/items', data, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
-      };
+      });
 
-      await api.post('/api/items', formData, config);
-
-      setLoading(false);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
-      console.error('Item creation failed:', err.response?.status, err.response?.data || err.message);
+      setError(err.response?.data?.message || err.message || 'Failed to add item');
+    } finally {
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to list item. Ensure backend is running and image upload is working.');
     }
   };
 
-  if (!user && !localStorage.getItem('userInfo')) {
-    return (
-      <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-        <div className="glass-panel" style={{ maxWidth: '480px', margin: '0 auto', padding: '40px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}></div>
-          <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--text-main)' }}>Access Denied</h3>
-          <p style={{ color: 'var(--text-secondary)', margin: '0 0 24px', lineHeight: 1.5 }}>
-            You must be signed in with your college student account to list equipment or books for lending.
-          </p>
-          <button onClick={() => navigate('/login')} className="glass-button btn-primary" style={{ width: '100%', padding: '14px' }}>
-            Sign In Now
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container" style={{ padding: '40px 20px 90px' }}>
-      <div className="glass-panel animate-fade-in" style={{ maxWidth: '700px', margin: '0 auto', padding: '40px' }}>
-        
-        <div style={{ textAlign: 'center', marginBottom: '34px' }}>
-          <div className="badge badge-butter" style={{ marginBottom: '14px' }}>
-            Campus Inventory Listing
-          </div>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
-            List Equipment for Sharing
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.98rem', marginTop: '8px' }}>
-            Help fellow students by lending scientific tools, textbooks, and hardware devices.
-          </p>
-        </div>
+    <div className="w-full max-w-3xl mx-auto pt-16 px-6 pb-24">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-extrabold text-primary mb-2">List an Item</h1>
+        <p className="text-muted-foreground">Share your equipment with the campus community.</p>
+      </div>
 
+      <Card className="p-6 sm:p-10">
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '16px', borderRadius: '12px', marginBottom: '24px', fontSize: '0.9rem' }}>
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-200">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-          
-          {/* Title */}
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
-              Item Title *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Casio FX-991EX Scientific Calculator"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="glass-input"
+        <form onSubmit={submitHandler} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-primary">Item Title</label>
+            <Input 
+              type="text" 
+              name="title" 
+              placeholder="e.g. TI-84 Plus Graphing Calculator"
+              value={formData.title} 
+              onChange={handleInputChange} 
+              required 
             />
           </div>
 
-          {/* Category & Condition Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-            <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
-                Category *
-              </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-primary">Category</label>
               <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="glass-input"
-                style={{ cursor: 'pointer' }}
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="flex h-10 w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat} style={{ color: '#013E37', background: '#FFEFB3' }}>{cat}</option>
-                ))}
+                <option value="Electronics">Electronics</option>
+                <option value="Books">Books</option>
+                <option value="Lab Equipment">Lab Equipment</option>
+                <option value="Sports">Sports</option>
+                <option value="Other">Other</option>
               </select>
             </div>
 
-            <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
-                Condition *
-              </label>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-primary">Condition</label>
               <select
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                className="glass-input"
-                style={{ cursor: 'pointer' }}
+                name="condition"
+                value={formData.condition}
+                onChange={handleInputChange}
+                className="flex h-10 w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                {CONDITIONS.map((cond) => (
-                  <option key={cond} value={cond} style={{ color: '#013E37', background: '#FFEFB3' }}>{cond}</option>
-                ))}
+                <option value="Like New">Like New</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
               </select>
             </div>
           </div>
 
-          {/* Description */}
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
-              Description & Specifications *
-            </label>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-primary">Description</label>
             <textarea
-              rows="4"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
               required
-              placeholder="Provide details about condition, specs, or included accessories (e.g., cables, manuals)."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="glass-input"
-              style={{ resize: 'vertical' }}
+              rows="4"
+              className="flex w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent resize-none"
+              placeholder="Provide details about the item's features, model number, and any accessories included."
             />
           </div>
 
-          {/* Image Upload */}
-          <div>
-            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '8px' }}>
-              Item Photo *
-            </label>
-            
-            <div style={{
-              border: '2px dashed var(--border-strong)',
-              borderRadius: '16px',
-              padding: '28px',
-              textAlign: 'center',
-              background: 'var(--bg-input)',
-              cursor: 'pointer',
-              position: 'relative',
-              transition: 'all 0.2s'
-            }}>
-              <input
-                type="file"
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-primary">Item Image</label>
+            <div className="relative border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center bg-muted/30 hover:bg-muted/50 transition-colors group cursor-pointer overflow-hidden min-h-[200px]">
+              <input 
+                type="file" 
+                onChange={handleFileChange} 
                 accept="image/*"
-                required={!imageFile}
-                onChange={handleImageChange}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  width: '100%',
-                  height: '100%',
-                  opacity: 0,
-                  cursor: 'pointer'
-                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                required 
               />
-
-              {imagePreview ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-                  <img src={imagePreview} alt="Preview" style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '14px', border: '1px solid var(--border-strong)', boxShadow: 'var(--shadow-main)' }} />
-                  <span style={{ fontSize: '0.88rem', color: 'var(--accent-main)', fontWeight: 600 }}>✓ Click or drag to change image</span>
+              {preview ? (
+                <div className="absolute inset-0">
+                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-white font-bold flex items-center gap-2"><UploadCloud size={20}/> Change Image</span>
+                  </div>
                 </div>
               ) : (
-                <div style={{ padding: '20px 0' }}>
-                  <div style={{ fontSize: '2.8rem', marginBottom: '10px' }}>📸</div>
-                  <p style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px', fontSize: '1.05rem' }}>Click or drag photo to upload</p>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Supports JPG, PNG, WEBP (Max 5MB)</p>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mx-auto mb-4 text-muted-foreground group-hover:text-accent transition-colors">
+                    <ImageIcon size={28} />
+                  </div>
+                  <p className="font-semibold text-primary mb-1">Click to upload or drag and drop</p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP (Max 5MB)</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="glass-button btn-primary"
-            style={{ width: '100%', padding: '16px', fontSize: '1.05rem', marginTop: '14px' }}
-          >
-            {loading ? 'Uploading to Cloudinary & Listing...' : 'Publish Item Listing'}
-          </button>
-
+          <div className="pt-4 flex gap-4">
+            <Button type="button" variant="outline" onClick={() => navigate('/dashboard')} className="flex-1">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading} className="flex-1">
+              {loading ? 'Publishing...' : 'Publish Listing'}
+            </Button>
+          </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 };

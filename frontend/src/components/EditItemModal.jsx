@@ -1,176 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Card } from './ui/card';
+import { X, Edit2, UploadCloud } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const CATEGORIES = ['Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
-const CONDITIONS = ['Like New', 'Good', 'Fair'];
-
-const EditItemModal = ({ item, user, onClose, onSuccess }) => {
-  const [title, setTitle] = useState(item?.title || '');
-  const [description, setDescription] = useState(item?.description || '');
-  const [category, setCategory] = useState(item?.category || 'Electronics');
-  const [condition, setCondition] = useState(item?.condition || 'Good');
-  const [loading, setLoading] = useState(false);
+const EditItemModal = ({ item, onClose, onSuccess }) => {
+  const { user } = useContext(AuthContext);
+  const [formData, setFormData] = useState({
+    title: item.title || '',
+    description: item.description || '',
+    category: item.category || 'Electronics',
+    condition: item.condition || 'Good',
+  });
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(item.imageUrl || null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title.trim() || !description.trim()) {
-      setError('Title and description are required.');
-      return;
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
+  };
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
       const storedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
       const token = user?.token || storedUser?.token;
-
-      if (!token) {
-        setError('You must be logged in to edit an item.');
-        setLoading(false);
-        return;
+      
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('description', formData.description);
+      data.append('category', formData.category);
+      data.append('condition', formData.condition);
+      if (file) {
+        data.append('image', file);
       }
 
-      const config = {
+      const response = await api.put(`/api/items/${item._id}`, data, {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const response = await api.put(
-        `/api/items/${item._id}`,
-        {
-          title: title.trim(),
-          description: description.trim(),
-          category,
-          condition,
-        },
-        config
-      );
-
-      setLoading(false);
-      if (onSuccess) {
-        onSuccess(response.data);
-      }
-      onClose();
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      onSuccess(response.data);
     } catch (err) {
-      console.error('Edit item error:', err);
+      setError(err.response?.data?.message || 'Failed to update item.');
       setLoading(false);
-      setError(err.response?.data?.message || err.message || 'Failed to update item details.');
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl p-6 w-full max-w-md relative text-[#485550]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-[#485550]">Edit Item Details</h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-[#485550] font-bold text-lg hover:opacity-75"
-          >
-            ✕
-          </button>
-        </div>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded-lg mb-4 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-bold text-[#485550] mb-1">
-              Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
-            />
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="w-full">
-              <label className="block text-sm font-bold text-[#485550] mb-1">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
-              >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        />
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl"
+        >
+          <Card className="overflow-hidden shadow-2xl border-0">
+            <div className="bg-muted px-6 py-4 flex justify-between items-center sticky top-0 z-20 border-b border-border">
+              <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                <Edit2 size={20} className="text-accent" /> Edit Listing
+              </h2>
+              <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-black/5">
+                <X size={20} />
+              </button>
             </div>
+            
+            <div className="p-6">
+              {error && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-md mb-6 text-sm font-semibold border border-red-200">
+                  {error}
+                </div>
+              )}
 
-            <div className="w-full">
-              <label className="block text-sm font-bold text-[#485550] mb-1">
-                Condition
-              </label>
-              <select
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
-              >
-                {CONDITIONS.map((cond) => (
-                  <option key={cond} value={cond}>
-                    {cond}
-                  </option>
-                ))}
-              </select>
+              <form onSubmit={submitHandler} className="space-y-5">
+                
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-primary">Item Title</label>
+                  <Input 
+                    type="text" 
+                    name="title" 
+                    value={formData.title} 
+                    onChange={handleInputChange} 
+                    required 
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-primary">Category</label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="flex h-10 w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <option value="Electronics">Electronics</option>
+                      <option value="Books">Books</option>
+                      <option value="Lab Equipment">Lab Equipment</option>
+                      <option value="Sports">Sports</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-primary">Condition</label>
+                    <select
+                      name="condition"
+                      value={formData.condition}
+                      onChange={handleInputChange}
+                      className="flex h-10 w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <option value="Like New">Like New</option>
+                      <option value="Good">Good</option>
+                      <option value="Fair">Fair</option>
+                      <option value="Poor">Poor</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-primary">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    required
+                    rows="3"
+                    className="flex w-full rounded-md border border-border bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent resize-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-primary">Update Image (Optional)</label>
+                  <div className="relative border border-border rounded-xl p-2 flex items-center gap-4 bg-muted/30 hover:bg-muted/50 transition-colors group cursor-pointer overflow-hidden h-24">
+                    <input 
+                      type="file" 
+                      onChange={handleFileChange} 
+                      accept="image/*"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                    />
+                    {preview && (
+                      <div className="w-20 h-20 shrink-0 rounded-md overflow-hidden border border-border bg-white">
+                        <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1 flex items-center gap-2 text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
+                      <UploadCloud size={18} />
+                      {file ? file.name : "Click to select a new image"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex gap-3 sticky bottom-0 bg-white">
+                  <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={loading} className="flex-1">
+                    {loading ? 'Saving Changes...' : 'Save Changes'}
+                  </Button>
+                </div>
+              </form>
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-[#485550] mb-1">
-              Description
-            </label>
-            <textarea
-              rows="4"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="w-full bg-white/70 border border-[#485550]/30 rounded-lg px-3 py-2 text-[#485550] font-medium outline-none focus:ring-2 focus:ring-[#C0EB6A]"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 mt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={loading}
-              className="px-4 py-2 bg-transparent border-2 border-[#485550] text-[#485550] font-bold rounded-lg hover:bg-[#485550] hover:text-[#F4F6F0] transition-colors duration-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-[#C0EB6A] text-[#485550] font-bold px-5 py-2 rounded-lg shadow-md hover:bg-[#aade49] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
-            >
-              {loading ? 'Saving...' : 'Save Changes'}
-            </button>
-          </div>
-        </form>
+          </Card>
+        </motion.div>
       </div>
-    </div>
+    </AnimatePresence>
   );
 };
 

@@ -2,6 +2,9 @@ import React, { useState, useContext } from 'react';
 import api from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card } from '../components/ui/card';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,90 +19,88 @@ const Login = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
     try {
-      const response = await api.post('/api/users/login', {
-        email,
-        password,
-      });
-
-      // Store the real user data and JWT token
+      const response = await api.post('/api/users/login', { email, password });
       login(response.data);
       localStorage.setItem('token', response.data.token);
-
-      setLoading(false);
       navigate('/dashboard');
     } catch (err) {
-      setLoading(false);
       setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container" style={{ padding: '60px 20px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 76px)' }}>
-      <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '440px', padding: '40px', position: 'relative' }}>
-        
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <div className="badge badge-butter" style={{ marginBottom: '12px' }}>
-            🔐 Campus Sign In
+    <div className="flex min-h-[calc(100vh-64px)]">
+      {/* Left Form Side */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+        <div className="w-full max-w-md">
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-extrabold text-primary mb-2">Welcome Back</h2>
+            <p className="text-muted-foreground">Sign in to your campus account to continue.</p>
           </div>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-main)' }}>Welcome Back</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '6px' }}>
-            Sign in with your college account to borrow and share inventory.
+
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-200">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={submitHandler} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-primary">College Email</label>
+              <Input 
+                type="email" 
+                placeholder="student@college.edu"
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+                className="h-12"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-primary">Password</label>
+              <Input 
+                type="password" 
+                placeholder="••••••••"
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                className="h-12"
+              />
+            </div>
+            
+            <Button type="submit" disabled={loading} className="w-full h-12 text-base mt-2">
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Don't have an account yet?{' '}
+            <Link to="/register" className="text-accent font-bold hover:underline">
+              Create an Account
+            </Link>
           </p>
         </div>
+      </div>
 
-        {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#FF8A8A', padding: '14px', borderRadius: '12px', fontSize: '0.9rem', marginBottom: '20px', textAlign: 'center' }}>
-            {error}
+      {/* Right Graphic Side */}
+      <div className="hidden lg:flex w-1/2 bg-primary p-12 items-center justify-center relative overflow-hidden rounded-bl-3xl">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent via-primary to-primary"></div>
+        <Card className="relative z-10 max-w-md p-10 bg-white/5 border-white/10 backdrop-blur-md shadow-2xl">
+          <div className="flex gap-4 mb-6">
+            <div className="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xl">"</div>
           </div>
-        )}
-
-        <form onSubmit={submitHandler} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <p className="text-2xl text-white font-medium leading-relaxed mb-6">
+            BorrowHub completely changed how I handle labs. I didn't have to buy a $200 oscilloscope for a one-week project.
+          </p>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
-              College Email *
-            </label>
-            <input 
-              type="email" 
-              placeholder="student@college.edu"
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
-              className="glass-input"
-            />
+            <p className="text-white font-bold">— Sarah Jenkins</p>
+            <p className="text-white/60 text-sm">Engineering Student</p>
           </div>
-          
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
-              Password *
-            </label>
-            <input 
-              type="password" 
-              placeholder="••••••••"
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              className="glass-input"
-            />
-          </div>
-          
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="glass-button btn-primary" 
-            style={{ width: '100%', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}
-          >
-            {loading ? 'Signing In...' : 'Sign In '}
-          </button>
-        </form>
-
-        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Don't have an account yet?{' '}
-          <Link to="/register" style={{ color: 'var(--accent-main)', textDecoration: 'none', fontWeight: 700 }}>
-            Create an Account
-          </Link>
-        </div>
+        </Card>
       </div>
     </div>
   );

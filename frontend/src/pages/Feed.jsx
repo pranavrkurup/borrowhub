@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
-import BorrowModal from '../components/BorrowModal';
 import ItemCard from '../components/ItemCard';
 import { Link } from 'react-router-dom';
+import { Search, X, Filter } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
 const CATEGORIES = ['All', 'Electronics', 'Books', 'Lab Equipment', 'Sports', 'Other'];
 
@@ -14,7 +16,6 @@ const Feed = () => {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItemForBorrow, setSelectedItemForBorrow] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
@@ -25,220 +26,136 @@ const Feed = () => {
     try {
       setLoading(true);
       setError(null);
-
       const params = {};
-      if (search && search.trim() !== '') {
-        params.search = search.trim();
-      }
-      if (category && category !== 'All') {
-        params.category = category;
-      }
+      if (search && search.trim() !== '') params.search = search.trim();
+      if (category && category !== 'All') params.category = category;
 
       const res = await api.get('/api/items', { params });
       setItems(res.data);
-      setLoading(false);
     } catch (err) {
       console.error(err);
       setError('Failed to fetch items from the server.');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleBorrowSuccess = () => {
-    setSelectedItemForBorrow(null);
-    setSuccessMessage('Borrow request submitted successfully! The owner has been notified on their dashboard.');
-    setTimeout(() => setSuccessMessage(null), 6000);
-  };
-
   const handleItemStatusChange = (updatedItem) => {
-    setItems((prev) =>
-      prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
-    );
-    setSuccessMessage('Item status updated to Requested successfully!');
-    setTimeout(() => setSuccessMessage(null), 6000);
+    setItems((prev) => prev.map((item) => (item._id === updatedItem._id ? updatedItem : item)));
+    setSuccessMessage('Item requested successfully!');
+    setTimeout(() => setSuccessMessage(null), 5000);
   };
 
   return (
-    <div className="max-w-7xl mx-auto pt-24 px-6 pb-24">
+    <div className="w-full pb-24 pt-12 px-6 flex flex-col md:flex-row gap-8">
+      
+      {/* Left Sidebar (Filters) */}
+      <aside className="w-full md:w-64 shrink-0">
+        <div className="sticky top-24 glass-panel p-6">
+          <div className="flex items-center gap-2 mb-6 text-primary">
+            <Filter size={20} />
+            <h2 className="text-lg font-bold">Filters</h2>
+          </div>
 
-      {/* Search Bar */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          fetchItems(searchQuery, selectedCategory);
-        }}
-        className="relative flex items-center w-full max-w-xl bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-2 mb-10 border border-gray-100"
-      >
-        <div className="pl-4 text-[#485550] flex items-center shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#485550" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Categories</h3>
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors ${
+                  selectedCategory === cat 
+                    ? 'bg-accent text-accent-foreground font-semibold shadow-sm' 
+                    : 'text-secondary hover:bg-muted font-medium'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-        <input
-          type="text"
-          placeholder="Search calculators, cameras, lab kits..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-transparent pl-6 py-3 outline-none text-gray-700 text-lg placeholder-gray-400"
-        />
-        <button
-          type="submit"
-          className="bg-[#C0EB6A] text-[#485550] px-8 py-3 rounded-full font-bold hover:bg-[#aee050] transition-colors"
-        >
-          Search
-        </button>
-      </form>
+      </aside>
 
-      {/* Category Pills */}
-      <div className="flex flex-wrap gap-4 mb-10">
-        {CATEGORIES.map((cat) => {
-          const isSelected = selectedCategory === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={
-                isSelected
-                  ? "px-5 py-2.5 rounded-full bg-[#C0EB6A] text-[#485550] border border-[#C0EB6A] font-medium shadow-sm transition-all cursor-pointer"
-                  : "px-5 py-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-[#C0EB6A] hover:text-[#485550] hover:bg-[#C0EB6A]/10 transition-all cursor-pointer font-medium"
-              }
+      {/* Main Content Area */}
+      <div className="flex-1">
+        {/* Search Bar */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search calculators, cameras, lab kits..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12 text-base rounded-xl bg-white/60 backdrop-blur-sm border-white/80 shadow-sm"
+            />
+          </div>
+          {(searchQuery || selectedCategory !== 'All') && (
+            <Button 
+              variant="outline" 
+              onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+              className="h-12 px-6 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
             >
-              {cat}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Active Filters Summary */}
-      {(searchQuery || selectedCategory !== 'All') && !loading && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '12px',
-          marginBottom: '24px',
-          flexWrap: 'wrap'
-        }}>
-          <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Showing results
-            {searchQuery && <> for "<strong style={{ color: 'var(--text-main)' }}>{searchQuery}</strong>"</>}
-            {selectedCategory !== 'All' && <> in <strong style={{ color: 'var(--text-main)' }}>{selectedCategory}</strong></>}
-            {` — ${items.length} item${items.length !== 1 ? 's' : ''} found`}
-          </span>
-          <button
-            onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-            className="glass-button"
-            style={{
-              padding: '4px 14px',
-              fontSize: '0.8rem',
-              borderRadius: '9999px',
-              background: 'rgba(239, 68, 68, 0.18)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
-              color: '#f87171'
-            }}
-          >
-            ✕ Clear Filters
-          </button>
-        </div>
-      )}
-
-      {/* Success Alert */}
-      {successMessage && (
-        <div 
-          className="glass-panel animate-fade-in"
-          style={{ 
-            background: 'var(--status-available-bg)', 
-            borderColor: 'var(--status-available-border)', 
-            padding: '16px 24px', 
-            marginBottom: '32px', 
-            textAlign: 'center',
-            color: 'var(--text-main)',
-            fontWeight: 600,
-            boxShadow: 'var(--shadow-glow)'
-          }}
-        >
-          {successMessage}
-        </div>
-      )}
-
-      {/* Error Alert */}
-      {error && (
-        <div className="glass-panel" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#f87171', padding: '18px', borderRadius: '16px', textAlign: 'center', marginBottom: '32px' }}>
-          {error}
-        </div>
-      )}
-
-      {/* Loading State */}
-      {loading ? (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-          gap: '26px',
-          marginTop: '24px'
-        }}>
-          {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className="flex flex-col h-[400px] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-xl p-4 animate-pulse"
-            >
-              <div className="w-full h-[210px] bg-[#485550]/10 rounded-2xl mb-4" />
-              <div className="w-3/4 h-6 bg-[#485550]/10 rounded-md mb-3" />
-              <div className="w-full h-4 bg-[#485550]/10 rounded-md mb-2" />
-              <div className="w-full h-4 bg-[#485550]/10 rounded-md mb-2" />
-              <div className="w-2/3 h-4 bg-[#485550]/10 rounded-md mb-2" />
-              <div className="w-full h-12 bg-[#485550]/10 rounded-xl mt-4 mt-auto" />
-            </div>
-          ))}
-        </div>
-      ) : items.length === 0 ? (
-        <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '520px', margin: '30px auto' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '14px' }}></div>
-          <h3 style={{ fontSize: '1.6rem', marginBottom: '10px', color: 'var(--text-main)' }}>No items found</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '26px', lineHeight: 1.5 }}>
-            {searchQuery || selectedCategory !== 'All' 
-              ? 'We couldn\'t find any items matching your filters. Try clearing your search query or selecting another category.' 
-              : 'Be the first student to list equipment or a textbook on BorrowHub!'}
-          </p>
-          {user ? (
-            <Link to="/add-item" className="glass-button btn-primary" style={{ textDecoration: 'none' }}>
-              + List an Item Now
-            </Link>
-          ) : (
-            <Link to="/login" className="glass-button btn-primary" style={{ textDecoration: 'none' }}>
-              Sign In to Get Started
-            </Link>
+              <X className="mr-2 h-4 w-4" /> Clear Filters
+            </Button>
           )}
         </div>
-      ) : (
-        /* Items Grid */
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-          gap: '26px',
-          marginTop: '24px'
-        }}>
-          {items.map((item) => (
-            <ItemCard
-              key={item._id}
-              item={item}
-              user={user}
-              onStatusChange={handleItemStatusChange}
-            />
-          ))}
-        </div>
-      )}
 
-      {/* Borrow Modal Popup */}
-      {selectedItemForBorrow && (
-        <BorrowModal
-          item={selectedItemForBorrow}
-          onClose={() => setSelectedItemForBorrow(null)}
-          onSuccess={handleBorrowSuccess}
-        />
-      )}
+        {/* Alerts */}
+        {successMessage && (
+          <div className="bg-status-available-bg text-status-available p-4 rounded-xl mb-6 font-semibold border border-status-available/20 shadow-sm">
+            {successMessage}
+          </div>
+        )}
 
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 font-semibold border border-red-200 shadow-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Results Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="glass-panel h-[420px] p-0 overflow-hidden animate-pulse">
+                <div className="w-full h-52 bg-muted/50" />
+                <div className="p-5 flex flex-col gap-3">
+                  <div className="h-6 w-3/4 bg-muted/50 rounded-md" />
+                  <div className="h-4 w-full bg-muted/50 rounded-md" />
+                  <div className="h-4 w-5/6 bg-muted/50 rounded-md" />
+                  <div className="mt-auto pt-4 h-10 w-full bg-muted/50 rounded-md" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <div className="glass-panel p-12 text-center max-w-lg mx-auto mt-12">
+            <h3 className="text-2xl font-bold text-primary mb-3">No items found</h3>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              {searchQuery || selectedCategory !== 'All' 
+                ? 'We couldn\'t find any items matching your filters. Try clearing your search query or selecting another category.' 
+                : 'Be the first student to list equipment or a textbook on BorrowHub!'}
+            </p>
+            <Button size="lg" asChild className="w-full sm:w-auto">
+              <Link to={user ? "/add-item" : "/login"}>
+                {user ? "+ List an Item Now" : "Sign In to Get Started"}
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {items.map((item) => (
+              <ItemCard
+                key={item._id}
+                item={item}
+                user={user}
+                onStatusChange={handleItemStatusChange}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

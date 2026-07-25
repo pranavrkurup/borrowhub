@@ -1,112 +1,116 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Zap, Leaf, Wallet } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className="container" style={{ paddingBottom: '90px' }}>
+    <div className="w-full pb-24">
       
-      {/* ─── 2-Column Hero Section ─── */}
-      <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center pt-16 pb-20 px-6">
+      {/* Hero Section */}
+      <section className="pt-24 pb-20 px-6 max-w-4xl mx-auto text-center flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center rounded-full border border-border bg-white px-3 py-1 text-sm font-medium text-muted-foreground mb-8 shadow-sm"
+        >
+          <span className="flex h-2 w-2 rounded-full bg-status-available mr-2 animate-pulse"></span>
+          Over 8,000 items currently shared on campus
+        </motion.div>
+        
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-5xl md:text-7xl font-extrabold tracking-tight text-primary mb-6 leading-tight"
+        >
+          Borrow what you need. <br />
+          <span className="text-accent relative whitespace-nowrap">
+            Share what you have.
+            <svg className="absolute w-full h-3 -bottom-1 left-0 text-accent/30" viewBox="0 0 100 10" preserveAspectRatio="none">
+              <path d="M0 5 Q 50 15 100 5" fill="transparent" stroke="currentColor" strokeWidth="4" />
+            </svg>
+          </span>
+        </motion.h1>
 
-        {/* ── Left Column: Copy & CTA ── */}
-        <div className="flex flex-col items-start">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-[#485550] leading-tight tracking-tight mb-6">
-            Borrow What You Need.
-            <span className="text-[#C0EB6A] block mt-2">Share What You Have.</span>
-          </h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed"
+        >
+          The frictionless college peer-to-peer equipment sharing platform. Access calculators, textbooks, IoT kits, and DSLR cameras directly from verified students.
+        </motion.p>
 
-          <p className="text-gray-600 text-lg md:text-xl max-w-lg mb-10 leading-relaxed">
-            A frictionless college peer-to-peer equipment sharing platform. Access scientific calculators, textbooks, IoT kits, and DSLR cameras directly from fellow students across campus.
-          </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-4"
+        >
+          <Button size="lg" asChild className="text-base h-14 px-8 rounded-full">
+            <Link to="/feed">Browse Inventory</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild className="text-base h-14 px-8 rounded-full bg-white">
+            <Link to="/register">Join as Student</Link>
+          </Button>
+        </motion.div>
+      </section>
 
-          {/* CTA Button */}
-          <Link
-            to="/feed"
-            className="inline-block bg-[#C0EB6A] text-[#485550] px-10 py-4 rounded-full font-bold text-lg shadow-md hover:shadow-lg hover:scale-105 hover:bg-[#aee050] transition-all duration-200 mb-16"
-          >
-            Browse the Feed →
-          </Link>
-
-          {/* Stat Cards */}
-          <div className="flex flex-wrap gap-6 mt-4">
-            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
-              <div className="text-2xl font-extrabold text-[#485550]">2,500+</div>
-              <div className="text-xs text-gray-500 mt-1 font-medium">Active Students</div>
+      {/* Bento Grid Value Props */}
+      <section className="max-w-6xl mx-auto px-6 mt-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          
+          <div className="glass-panel p-8 flex flex-col items-start text-left hover:-translate-y-1 transition-transform duration-300">
+            <div className="bg-accent/10 p-3 rounded-2xl mb-5 text-accent">
+              <ShieldCheck size={32} strokeWidth={1.5} />
             </div>
-            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
-              <div className="text-2xl font-extrabold text-[#485550]">8,000+</div>
-              <div className="text-xs text-gray-500 mt-1 font-medium">Items Shared</div>
+            <h3 className="text-xl font-bold text-primary mb-2">Verified Peers</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Every user is authenticated with a valid .edu email address from your campus.
+            </p>
+          </div>
+
+          <div className="glass-panel p-8 flex flex-col items-start text-left hover:-translate-y-1 transition-transform duration-300">
+            <div className="bg-blue-500/10 p-3 rounded-2xl mb-5 text-blue-600">
+              <Zap size={32} strokeWidth={1.5} />
             </div>
-            <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-6 shadow-xl flex-1 min-w-[140px] text-center transform hover:-translate-y-1 transition-all duration-300">
-              <div className="text-2xl font-extrabold text-[#485550]">100%</div>
-              <div className="text-xs text-gray-500 mt-1 font-medium">Trusted Peers</div>
+            <h3 className="text-xl font-bold text-primary mb-2">Instant Requests</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Find what you need with ⌘K search and send a request in seconds.
+            </p>
+          </div>
+
+          <div className="glass-panel p-8 flex flex-col items-start text-left hover:-translate-y-1 transition-transform duration-300">
+            <div className="bg-green-500/10 p-3 rounded-2xl mb-5 text-green-600">
+              <Leaf size={32} strokeWidth={1.5} />
             </div>
-          </div>
-        </div>
-
-        {/* ── Right Column: Hub Graphic ── */}
-        <div className="relative w-full aspect-square flex items-center justify-center hidden lg:flex">
-          {/* Concentric Orbit Circles */}
-          <div className="border border-gray-200 rounded-full absolute w-[85%] h-[85%] opacity-60"></div>
-          <div className="border border-gray-200 rounded-full absolute w-[62%] h-[62%] opacity-50"></div>
-          <div className="border border-gray-100 rounded-full absolute w-[40%] h-[40%] opacity-40"></div>
-
-          {/* Center Logo */}
-          <img
-            src="/logo.png"
-            alt="BorrowHub Logo"
-            className="w-24 h-24 object-contain drop-shadow-lg z-10 relative"
-          />
-
-          {/* Floating Item: Camera */}
-          <div className="absolute top-8 right-12 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3s' }}>
-            <span className="text-2xl">📷</span>
-            <span className="text-sm font-semibold text-[#485550]">DSLR Camera</span>
+            <h3 className="text-xl font-bold text-primary mb-2">Sustainable</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Share resources instead of buying new. Reduce campus e-waste together.
+            </p>
           </div>
 
-          {/* Floating Item: Calculator */}
-          <div className="absolute bottom-24 left-6 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }}>
-            <span className="text-2xl">🧮</span>
-            <span className="text-sm font-semibold text-[#485550]">Calculator</span>
+          <div className="glass-panel p-8 flex flex-col items-start text-left hover:-translate-y-1 transition-transform duration-300">
+            <div className="bg-purple-500/10 p-3 rounded-2xl mb-5 text-purple-600">
+              <Wallet size={32} strokeWidth={1.5} />
+            </div>
+            <h3 className="text-xl font-bold text-primary mb-2">Save Money</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Why buy a $150 calculator for one exam when you can borrow it for free?
+            </p>
           </div>
 
-          {/* Floating Item: Textbook */}
-          <div className="absolute top-1/3 left-2 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
-            <span className="text-2xl">📚</span>
-            <span className="text-sm font-semibold text-[#485550]">Textbooks</span>
-          </div>
-
-          {/* Floating Item: IoT Kit */}
-          <div className="absolute bottom-12 right-8 bg-white shadow-lg rounded-xl p-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3.8s', animationDelay: '0.8s' }}>
-            <span className="text-2xl">🔌</span>
-            <span className="text-sm font-semibold text-[#485550]">IoT Kit</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── Value Props Row (Full Width) ─── */}
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 py-12 px-6 border-t border-gray-100">
-        <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl"></span>
-          <h3 className="font-bold text-[#485550] text-sm">Verified Students</h3>
-          <p className="text-xs text-gray-500">Every user is a verified college student on your campus.</p>
-        </div>
-        <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl"></span>
-          <h3 className="font-bold text-[#485550] text-sm">Easy & Safe</h3>
-          <p className="text-xs text-gray-500">Simple request flow with built-in accountability tracking.</p>
-        </div>
-        <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl">♻️</span>
-          <h3 className="font-bold text-[#485550] text-sm">Sustainable Campus</h3>
-          <p className="text-xs text-gray-500">Share resources instead of buying new — reduce waste together.</p>
-        </div>
-        <div className="flex flex-col items-center text-center gap-2">
-          <span className="text-3xl">💰</span>
-          <h3 className="font-bold text-[#485550] text-sm">Save Money</h3>
-          <p className="text-xs text-gray-500">Why buy when you can borrow? Keep more in your pocket.</p>
-        </div>
-      </div>
+        </motion.div>
+      </section>
 
     </div>
   );
