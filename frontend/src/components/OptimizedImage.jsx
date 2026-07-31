@@ -1,110 +1,106 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { ImageOff } from 'lucide-react';
 
 /**
- * Detects if a URL is a Cloudinary URL and extracts the base + public ID.
- * Supports both res.cloudinary.com and cloudinary fetch URLs.
- * Returns null for non-Cloudinary URLs.
+ * Detects if a URL is a Cloudinary URL and extracts the base, existing path, and filename.
  */
 function parseCloudinaryUrl(src) {
   if (!src || typeof src !== 'string') return null;
 
-  // Match: https://res.cloudinary.com/{cloud}/image/upload/{...}/{public_id}.{ext}
-  const uploadMatch = src.match(
-    /^(https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)((?:[^/]+\/)*?)([^/]+)$/
-  );
-  if (uploadMatch) {
-    return {
-      base: uploadMatch[1],
-      existingTransforms: uploadMatch[2] || '',
-      publicIdWithExt: uploadMatch[3],
-    };
+  try {
+    // Match: https://res.cloudinary.com/{cloud}/image/upload/{existingTransforms}/{public_id}.{ext}
+    const uploadMatch = src.match(
+      /^(https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)((?:[^/]+\/)*?)([^/]+)$/
+    );
+    
+    if (uploadMatch) {
+      const existingTransforms = uploadMatch[2] || '';
+      
+      // Check if it's already transformed (contains known transformation patterns like f_auto, w_500, etc.)
+      // We look for segments that contain comma-separated key_value pairs or single key_value pairs typical of cloudinary
+      const isTransformed = existingTransforms.split('/').some(segment => 
+        /^(?:[a-z]{1,3}_[\w\-:\.]+(?:,|$))+/.test(segment)
+      );
+
+      return {
+        base: uploadMatch[1],
+        existingTransforms,
+        publicIdWithExt: uploadMatch[3],
+        isTransformed
+      };
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Cloudinary parsing error:', err);
+    }
   }
   return null;
 }
 
 /**
  * Builds a Cloudinary URL with the given transformations.
- * @param {object} parsed - Output from parseCloudinaryUrl
- * @param {object} opts - { width, height, crop, gravity, quality, format, dpr, extra }
  */
 function buildCloudinaryUrl(parsed, opts = {}) {
-  const {
-    width,
-    height,
-    aspectRatio,
-    crop = 'fill',
-    gravity = 'auto',
-    quality = 'auto',
-    format = 'auto',
-    dpr = 'auto',
-    blur = false,
-    extra = '',
-  } = opts;
+  try {
+    const {
+      width,
+      height,
+      aspectRatio,
+      crop = 'fill',
+      gravity = 'auto',
+      quality = 'auto',
+      format = 'auto',
+      dpr = 'auto',
+      blur = false,
+      extra = '',
+    } = opts;
 
-  const parts = [`f_${format}`, `q_${quality}`, `dpr_${dpr}`];
-  if (crop) parts.push(`c_${crop}`);
-  if (gravity) parts.push(`g_${gravity}`);
-  if (width) parts.push(`w_${width}`);
-  if (height) {
-    parts.push(`h_${height}`);
-  } else if (aspectRatio) {
-    parts.push(`ar_${aspectRatio.replace('/', ':')}`);
-  }
-  if (blur) {
-    parts.push('e_blur:1800', 'q_10');
-    // Override width for tiny placeholder
-    const idx = parts.findIndex(p => p.startsWith('w_'));
-    if (idx !== -1) parts[idx] = 'w_40';
-    const hidx = parts.findIndex(p => p.startsWith('h_'));
-    if (hidx !== -1) parts.splice(hidx, 1);
-  }
-  if (extra) parts.push(extra);
+    const parts = [`f_${format}`, `q_${quality}`, `dpr_${dpr}`];
+    if (crop) parts.push(`c_${crop}`);
+    if (gravity) parts.push(`g_${gravity}`);
+    if (width) parts.push(`w_${width}`);
+    if (height) {
+      parts.push(`h_${height}`);
+    } else if (aspectRatio) {
+      parts.push(`ar_${aspectRatio.replace('/', ':')}`);
+    }
+    if (blur) {
+      parts.push('e_blur:1800', 'q_10');
+      const idx = parts.findIndex(p => p.startsWith('w_'));
+      if (idx !== -1) parts[idx] = 'w_40';
+      const hidx = parts.findIndex(p => p.startsWith('h_'));
+      if (hidx !== -1) parts.splice(hidx, 1);
+    }
+    if (extra) parts.push(extra);
 
-  return `${parsed.base}${parts.join(',')}/${parsed.publicIdWithExt}`;
+    // IMPORTANT: Include parsed.existingTransforms to preserve folders and version numbers
+    return `${parsed.base}${parts.join(',')}/${parsed.existingTransforms}${parsed.publicIdWithExt}`;
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Cloudinary build error:', err);
+    }
+    throw err;
+  }
 }
 
 /**
  * Generates srcSet entries for responsive images.
  */
 function buildSrcSet(parsed, opts, widths = [400, 600, 800, 1200]) {
-  return widths
-    .map((w) => {
-      const url = buildCloudinaryUrl(parsed, { ...opts, width: w, height: undefined, crop: 'fill' });
-      return `${url} ${w}w`;
-    })
-    .join(', ');
+  try {
+    return widths
+      .map((w) => {
+        const url = buildCloudinaryUrl(parsed, { ...opts, width: w, height: undefined, crop: 'fill' });
+        return `${url} ${w}w`;
+      })
+      .join(', ');
+  } catch (err) {
+    return undefined;
+  }
 }
 
-// Default sizes for responsive grid layouts
 const DEFAULT_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
 
-/**
- * OptimizedImage — Source-agnostic image component with Cloudinary optimizations.
- *
- * Features:
- * - Cloudinary URL transformation (auto format, quality, responsive widths)
- * - Blur placeholder → sharp fade transition
- * - Responsive srcSet generation
- * - Lazy loading with decoding="async"
- * - CSS aspect-ratio to prevent CLS
- * - Error fallback with styled placeholder
- * - Works with Cloudinary, local, and external URLs
- *
- * @param {string} src - Image source URL
- * @param {string} alt - Alt text
- * @param {number} width - Desired display width (for Cloudinary transform)
- * @param {number} height - Desired display height (for Cloudinary transform, optional)
- * @param {string} aspectRatio - CSS aspect-ratio (e.g. "10/7", "1/1", "16/9")
- * @param {string} crop - Cloudinary crop mode (default: "fill")
- * @param {string} gravity - Cloudinary gravity (default: "auto")
- * @param {string} fetchpriority - "high" | "low" | "auto"
- * @param {string} sizes - Responsive sizes attribute
- * @param {string} className - Additional CSS classes for the container
- * @param {string} imgClassName - Additional CSS classes for the img element
- * @param {string} objectFit - CSS object-fit value (default: "cover")
- * @param {boolean} showBlurPlaceholder - Whether to show blur placeholder (default: true)
- */
 const OptimizedImage = React.memo(function OptimizedImage({
   src,
   alt = '',
@@ -122,12 +118,14 @@ const OptimizedImage = React.memo(function OptimizedImage({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const [useOriginalFallback, setUseOriginalFallback] = useState(false);
 
-  const handleLoad = useCallback(() => setLoaded(true), []);
-  const handleError = useCallback(() => {
-    setErrored(true);
-    setLoaded(true); // Remove loading state
-  }, []);
+  // Reset state if src changes
+  useEffect(() => {
+    setLoaded(false);
+    setErrored(false);
+    setUseOriginalFallback(false);
+  }, [src]);
 
   const parsed = useMemo(() => parseCloudinaryUrl(src), [src]);
 
@@ -136,23 +134,47 @@ const OptimizedImage = React.memo(function OptimizedImage({
     [width, height, aspectRatio, crop, gravity]
   );
 
-  // Compute optimized URL (Cloudinary) or use original
   const optimizedSrc = useMemo(() => {
-    if (!parsed) return src;
-    return buildCloudinaryUrl(parsed, transformOpts);
+    if (!parsed || parsed.isTransformed) return src;
+    try {
+      return buildCloudinaryUrl(parsed, transformOpts);
+    } catch (e) {
+      return src; // Fallback to original if transformation fails
+    }
   }, [parsed, src, transformOpts]);
 
-  // Compute srcSet for responsive images
   const srcSet = useMemo(() => {
-    if (!parsed) return undefined;
+    if (!parsed || parsed.isTransformed) return undefined;
     return buildSrcSet(parsed, transformOpts);
   }, [parsed, transformOpts]);
 
-  // Compute tiny blur placeholder URL
   const blurSrc = useMemo(() => {
-    if (!parsed || !showBlurPlaceholder) return null;
-    return buildCloudinaryUrl(parsed, { ...transformOpts, blur: true });
+    if (!parsed || parsed.isTransformed || !showBlurPlaceholder) return null;
+    try {
+      return buildCloudinaryUrl(parsed, { ...transformOpts, blur: true });
+    } catch (e) {
+      return null;
+    }
   }, [parsed, showBlurPlaceholder, transformOpts]);
+
+  const handleLoad = useCallback(() => setLoaded(true), []);
+  
+  const handleError = useCallback(() => {
+    // If it fails on the optimized Cloudinary URL, retry with the original URL
+    if (parsed && !parsed.isTransformed && !useOriginalFallback) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`Failed to load optimized image, retrying with original: ${src}`);
+      }
+      setUseOriginalFallback(true);
+      return;
+    }
+    // If it fails on the original (or it's already using fallback), show error placeholder
+    setErrored(true);
+    setLoaded(true);
+  }, [parsed, useOriginalFallback, src]);
+
+  const currentSrc = useOriginalFallback ? src : optimizedSrc;
+  const currentSrcSet = useOriginalFallback ? undefined : srcSet;
 
   if (errored) {
     return (
@@ -172,8 +194,8 @@ const OptimizedImage = React.memo(function OptimizedImage({
       className={`relative overflow-hidden bg-muted/20 ${className}`}
       style={{ aspectRatio }}
     >
-      {/* Blur placeholder (Cloudinary only) */}
-      {blurSrc && !loaded && (
+      {/* Blur placeholder */}
+      {blurSrc && !loaded && !useOriginalFallback && (
         <img
           src={blurSrc}
           alt=""
@@ -185,16 +207,16 @@ const OptimizedImage = React.memo(function OptimizedImage({
         />
       )}
 
-      {/* Skeleton pulse when no blur available */}
+      {/* Skeleton pulse */}
       {!blurSrc && !loaded && (
         <div className="absolute inset-0 bg-muted/30 animate-pulse" />
       )}
 
       {/* Main image */}
       <img
-        src={optimizedSrc}
-        srcSet={srcSet}
-        sizes={srcSet ? sizes : undefined}
+        src={currentSrc}
+        srcSet={currentSrcSet}
+        sizes={currentSrcSet ? sizes : undefined}
         alt={alt}
         loading={fetchpriority === 'high' ? 'eager' : 'lazy'}
         decoding="async"
