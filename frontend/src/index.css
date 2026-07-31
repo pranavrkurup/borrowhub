@@ -68,6 +68,27 @@
   }
 }
 
+/* ─── Responsive Hero Typography ─── */
+.hero-heading {
+  font-size: clamp(2rem, 6vw + 0.5rem, 4.5rem);
+}
+
+.hero-subheading {
+  font-size: clamp(0.95rem, 1.5vw + 0.5rem, 1.25rem);
+}
+
+.hero-cta-btn {
+  font-size: clamp(0.875rem, 1vw + 0.25rem, 1rem);
+  height: clamp(2.75rem, 4vw + 0.5rem, 3.5rem);
+  padding-left: clamp(1.5rem, 3vw, 2rem);
+  padding-right: clamp(1.5rem, 3vw, 2rem);
+}
+
+/* ─── Mobile-specific tweaks for navbar height ─── */
+.h-13 {
+  height: 3.25rem;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -81,4 +102,18 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary);
+}
+
+/* ─── Touch device optimizations ─── */
+@media (hover: none) and (pointer: coarse) {
+  /* Ensure minimum 44px touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Disable hover effects that can cause sticky states on touch */
+  .glass-panel:hover {
+    transform: none;
+  }
 }

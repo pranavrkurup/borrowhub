@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import Brand from './Brand';
@@ -25,24 +25,26 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none px-4 sm:px-6">
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none px-3 sm:px-6">
         <motion.header
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           className={`pointer-events-auto w-full max-w-[1440px] bg-background border transition-all duration-300 flex items-center justify-between
             ${isScrolled 
-              ? 'mt-3 h-14 rounded-full border-border/80 shadow-md shadow-black/5' 
-              : 'mt-4 h-16 rounded-[18px] border-border shadow-sm'
+              ? 'mt-2 sm:mt-3 h-13 sm:h-14 rounded-full border-border/80 shadow-md shadow-black/5' 
+              : 'mt-3 sm:mt-4 h-14 sm:h-16 rounded-2xl sm:rounded-[18px] border-border shadow-sm'
             }`}
         >
-          <div className="flex items-center px-4 sm:px-6 w-full justify-between gap-6">
-            <div className="flex items-center gap-8">
+          <div className="flex items-center px-3 sm:px-4 md:px-6 w-full justify-between gap-3 sm:gap-6">
+            {/* Left section: Brand + Nav */}
+            <div className="flex items-center gap-4 md:gap-8 min-w-0">
               <Brand />
               <NavigationLinks />
             </div>
 
-            <div className="flex items-center gap-4">
+            {/* Right section: Search + Actions + Mobile toggle */}
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <SearchTrigger />
 
               {user ? (
@@ -64,19 +66,21 @@ const Navbar = () => {
 
               {/* Mobile Menu Toggle */}
               <button
-                className="md:hidden p-2 -mr-2 rounded-full text-muted-foreground hover:bg-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
+                className="md:hidden flex items-center justify-center w-10 h-10 -mr-1 rounded-xl text-foreground hover:bg-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors active:scale-95"
                 onClick={() => setMobileDrawerOpen(true)}
                 aria-label="Open navigation menu"
+                aria-expanded={mobileDrawerOpen}
+                aria-controls="mobile-navigation"
               >
-                <Menu size={22} />
+                <Menu size={22} strokeWidth={2} />
               </button>
             </div>
           </div>
         </motion.header>
       </div>
 
-      {/* Spacer to push content down so it doesn't hide behind floating navbar */}
-      <div className="h-24 md:h-28"></div>
+      {/* Spacer — smaller on mobile to reduce gap */}
+      <div className="h-20 sm:h-24 md:h-28"></div>
 
       <MobileDrawer 
         isOpen={mobileDrawerOpen} 
