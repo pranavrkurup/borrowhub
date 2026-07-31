@@ -34,15 +34,15 @@ const Login = () => {
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
       {/* Left Form Side */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-8 md:p-12">
         <div className="w-full max-w-md">
-          <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-extrabold text-primary mb-2">Welcome Back</h2>
-            <p className="text-muted-foreground">Sign in to your campus account to continue.</p>
+          <div className="mb-6 sm:mb-8 md:mb-10 text-center lg:text-left">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-primary mb-1.5 sm:mb-2">Welcome Back</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Sign in to your campus account to continue.</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-200">
+            <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl mb-4 sm:mb-6 text-sm font-semibold border border-red-200">
               {error}
             </div>
           )}
@@ -56,7 +56,7 @@ const Login = () => {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
-                className="h-12"
+                className="h-11 sm:h-12"
               />
             </div>
             
@@ -68,11 +68,11 @@ const Login = () => {
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
-                className="h-12"
+                className="h-11 sm:h-12"
               />
             </div>
             
-            <Button type="submit" disabled={loading} className="w-full h-12 text-base mt-2">
+            <Button type="submit" disabled={loading} className="w-full h-11 sm:h-12 text-sm sm:text-base mt-2">
               {loading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>

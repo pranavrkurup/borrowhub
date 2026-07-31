@@ -37,15 +37,15 @@ const Register = () => {
   return (
     <div className="flex min-h-[calc(100vh-64px)] flex-row-reverse">
       {/* Right Form Side */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-8 md:p-12">
         <div className="w-full max-w-md">
-          <div className="mb-8 text-center lg:text-left">
-            <h2 className="text-3xl font-extrabold text-primary mb-2">Create an Account</h2>
-            <p className="text-muted-foreground">Join thousands of students sharing equipment.</p>
+          <div className="mb-5 sm:mb-6 md:mb-8 text-center lg:text-left">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-primary mb-1.5 sm:mb-2">Create an Account</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Join thousands of students sharing equipment.</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-200">
+            <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl mb-4 sm:mb-6 text-sm font-semibold border border-red-200">
               {error}
             </div>
           )}
@@ -71,7 +71,7 @@ const Register = () => {
               <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
             
-            <Button type="submit" disabled={loading} className="w-full h-12 text-base mt-4">
+            <Button type="submit" disabled={loading} className="w-full h-11 sm:h-12 text-sm sm:text-base mt-3 sm:mt-4">
               {loading ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </form>

@@ -25,18 +25,18 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none px-3 sm:px-6">
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none md:px-6 md:pt-4">
         <motion.header
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className={`pointer-events-auto w-full max-w-[1440px] bg-background border transition-all duration-300 flex items-center justify-between
+          className={`pointer-events-auto w-full max-w-[1440px] bg-background/95 backdrop-blur-md transition-all duration-300 flex items-center justify-between
             ${isScrolled 
-              ? 'mt-2 sm:mt-3 h-13 sm:h-14 rounded-full border-border/80 shadow-md shadow-black/5' 
-              : 'mt-3 sm:mt-4 h-14 sm:h-16 rounded-2xl sm:rounded-[18px] border-border shadow-sm'
+              ? 'md:mt-0 h-[60px] md:h-14 md:rounded-full border-b md:border-b-0 md:border border-border/50 shadow-[0_1px_2px_rgba(0,0,0,0.02)] md:shadow-sm md:shadow-black/5' 
+              : 'md:mt-0 h-[64px] md:h-16 md:rounded-[18px] border-b md:border-b-0 md:border border-border/30 md:shadow-[0_1px_3px_rgba(0,0,0,0.03)]'
             }`}
         >
-          <div className="flex items-center px-3 sm:px-4 md:px-6 w-full justify-between gap-3 sm:gap-6">
+          <div className="flex items-center px-4 sm:px-5 md:px-6 w-full justify-between gap-3 md:gap-6">
             {/* Left section: Brand + Nav */}
             <div className="flex items-center gap-4 md:gap-8 min-w-0">
               <Brand />
@@ -44,7 +44,7 @@ const Navbar = () => {
             </div>
 
             {/* Right section: Search + Actions + Mobile toggle */}
-            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 shrink-0">
               <SearchTrigger />
 
               {user ? (
@@ -66,21 +66,21 @@ const Navbar = () => {
 
               {/* Mobile Menu Toggle */}
               <button
-                className="md:hidden flex items-center justify-center w-10 h-10 -mr-1 rounded-xl text-foreground hover:bg-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors active:scale-95"
+                className="md:hidden flex items-center justify-center w-9 h-9 -mr-0.5 rounded-lg text-foreground hover:bg-muted/40 outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors active:scale-95"
                 onClick={() => setMobileDrawerOpen(true)}
                 aria-label="Open navigation menu"
                 aria-expanded={mobileDrawerOpen}
                 aria-controls="mobile-navigation"
               >
-                <Menu size={22} strokeWidth={2} />
+                <Menu size={20} strokeWidth={2.2} />
               </button>
             </div>
           </div>
         </motion.header>
       </div>
 
-      {/* Spacer — smaller on mobile to reduce gap */}
-      <div className="h-20 sm:h-24 md:h-28"></div>
+      {/* Spacer — fluid, smaller on mobile */}
+      <div className="h-[64px] sm:h-[76px] md:h-[88px]"></div>
 
       <MobileDrawer 
         isOpen={mobileDrawerOpen} 

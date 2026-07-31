@@ -71,13 +71,21 @@ const AddItem = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto pt-16 px-6 pb-24">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-extrabold text-primary mb-2">List an Item</h1>
-        <p className="text-muted-foreground">Share your equipment with the campus community.</p>
+    <div 
+      className="w-full max-w-3xl mx-auto"
+      style={{
+        paddingLeft: 'var(--space-page-x)',
+        paddingRight: 'var(--space-page-x)',
+        paddingTop: 'clamp(1.5rem, 4vw, 4rem)',
+        paddingBottom: 'var(--space-page-bottom)',
+      }}
+    >
+      <div className="mb-5 sm:mb-6 md:mb-8 text-center">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-primary mb-1.5 sm:mb-2">List an Item</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Share your equipment with the campus community.</p>
       </div>
 
-      <Card className="p-6 sm:p-10">
+      <Card className="p-4 sm:p-6 md:p-10">
         {error && (
           <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-semibold border border-red-200">
             {error}

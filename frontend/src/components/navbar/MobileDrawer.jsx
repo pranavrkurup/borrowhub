@@ -107,11 +107,11 @@ const MobileDrawer = ({ isOpen, onClose }) => {
           {/* Drawer panel */}
           <motion.aside
             ref={drawerRef}
-            initial={{ x: '100%' }}
+            initial={{ x: '-100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            exit={{ x: '-100%' }}
             transition={{ type: 'tween', duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-[340px] bg-background z-[110] md:hidden flex flex-col shadow-2xl"
+            className="fixed top-0 left-0 bottom-0 w-[85vw] max-w-[340px] bg-background z-[110] md:hidden flex flex-col shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
